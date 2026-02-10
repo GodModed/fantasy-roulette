@@ -2,6 +2,7 @@ import { Hono } from 'hono';
 import { cors } from 'hono/cors';
 import { streamSSE, SSEStreamingApi } from 'hono/streaming';
 import { EventEmitter } from 'node:events';
+import type { ServerPlayer, ServerGame } from "common/types";
 const app = new Hono();
 app.use('*', cors());
 
@@ -21,16 +22,10 @@ function getUniqueCode(): string {
 	return code;
 }
 
-type Player = {
-	name: string
-}
-
-type Game = {
-	date: number,
-	players: Player[],
-}
-const games: Record<string, Game> = {};
-const hostRoomEmitter = new EventEmitter();
+const games: Record<string, ServerGame> = {};
+const hostRoomEmitter = new EventEmitter<{
+	[K in (`join-${string}` | `start-${string}`)]: []
+}>();
 
 app.get('/', (c) => c.text('Hono!'));
 app.get('/getCode', (c) => {
@@ -65,7 +60,7 @@ app.get('/join/:id/:name', (c) => {
 	c.status(200);
 	return c.text("Game found");
 });
-app.get('/start/:id', async (c) => {
+app.get('/start/:id', (c) => {
 	const code = c.req.param('id');
 	if (games[code] == null) {
 		c.status(404);
@@ -73,7 +68,8 @@ app.get('/start/:id', async (c) => {
 	}
 
 	hostRoomEmitter.emit("start-" + code);
-
+	c.status(200);
+	return c.text("Started");
 });
 app.get('/hostStream/:id', (c) => {
 	const code = c.req.param('id');
@@ -82,21 +78,23 @@ app.get('/hostStream/:id', (c) => {
 		return c.text("Not found");
 	}
 	const game = games[code];
-	return streamSSE(c, async(stream) => {
+	return streamSSE(c, async (stream) => {
 		let aborted = false;
+		const onJoin = async (name: string) => {
+			await stream.writeSSE({ event: 'join', data: name });
+		};
+
+		const onStart = async () => {
+			await stream.writeSSE({ event: 'start', data: '' });
+		};
+
+		hostRoomEmitter.on("join-" + code, onJoin);
+		hostRoomEmitter.on("start-" + code, onStart);
 		stream.onAbort(() => {
 			aborted = true;
 			console.log("Host stream ended");
-			hostRoomEmitter.removeAllListeners("join-" + code);
-			hostRoomEmitter.removeAllListeners("start-" + code);
-		});
-
-		hostRoomEmitter.on("join-" + code, async (name: string) => {
-			await stream.writeSSE({ event: 'join', data: name});
-		})
-
-		hostRoomEmitter.on("start-" + code, async () => {
-			await stream.writeSSE({ event: 'start', data: '' });
+			hostRoomEmitter.off("join-" + code, onJoin);
+			hostRoomEmitter.off("start-" + code, onStart);
 		});
 
 		while (!aborted) {

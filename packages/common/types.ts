@@ -79,3 +79,12 @@ export type GENERAL_STATE = {
     playing: boolean,
     hosting: boolean
 };
+
+export type ServerPlayer = {
+    name: string
+};
+
+export type ServerGame = {
+    date: number,
+    players: ServerPlayer[]
+};

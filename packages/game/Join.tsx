@@ -17,8 +17,8 @@ export default function Join({
 }) {
 
 
-	const codeRef = useRef<TextInputProps>(null);
-	const nameRef = useRef<TextInputProps>(null);
+	const codeRef = useRef<TextInputProps>(null); // TODO: Make use state
+	const nameRef = useRef<TextInputProps>(null); // TODO: make use state
 
 	const [waiting, setWaiting] = useState<boolean>(false);
 	useEffect(() => {
