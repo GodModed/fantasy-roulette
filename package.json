@@ -1,0 +1,5 @@
+{
+	"name": "fantasy-monorepo",
+	"private": true,
+	"workspaces": ["packages/*"]
+}
