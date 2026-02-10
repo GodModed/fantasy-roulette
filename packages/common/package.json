@@ -1,6 +1,7 @@
 {
   "name": "common",
   "module": "index.ts",
+  "source": "index.ts",
   "type": "module",
   "private": true,
   "devDependencies": {

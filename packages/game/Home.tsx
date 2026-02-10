@@ -1,7 +1,7 @@
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Text, View } from "react-native";
 import { Button, ButtonGroup } from "./components/ui/button";
-import { GENERAL_STATE, SCREEN } from "./types";
+import { GENERAL_STATE, SCREEN } from "common/types";
 import { Dispatch, SetStateAction } from "react";
 
 export default function Home({

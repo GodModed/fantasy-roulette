@@ -1,5 +1,5 @@
 {
-  "name": "fantasy-fb-game",
+  "name": "game",
   "version": "1.0.0",
   "main": "index.ts",
   "scripts": {
@@ -9,6 +9,7 @@
     "web": "expo start --web"
   },
   "dependencies": {
+    "common": "workspace:*",
     "@expo/html-elements": "^0.12.5",
     "@gluestack-ui/core": "^3.0.10",
     "@gluestack-ui/utils": "^3.0.11",

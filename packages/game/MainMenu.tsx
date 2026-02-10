@@ -1,6 +1,6 @@
 import { ComponentType, createElement, Dispatch, FC, ReactNode, SetStateAction, useState } from "react";
 import Game from "./Game";
-import { GENERAL_STATE } from "./types";
+import { GENERAL_STATE } from "common/types";
 import { GluestackUIProvider } from "./components/ui/gluestack-ui-provider";
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
 import Home from "./Home";

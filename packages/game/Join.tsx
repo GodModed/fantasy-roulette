@@ -1,5 +1,5 @@
 import { Dispatch, SetStateAction, useEffect, useRef, useState } from "react";
-import { GENERAL_STATE, SCREEN } from "./types";
+import { GENERAL_STATE, SCREEN } from "common/types";
 import { Text, TextInputProps } from "react-native";
 import { Box } from "./components/ui/box";
 import { Input, InputField } from "./components/ui/input";

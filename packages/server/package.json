@@ -1,5 +1,5 @@
 {
-  "name": "fantasy-fb-server",
+  "name": "server",
   "module": "index.ts",
   "type": "module",
   "private": true,
@@ -10,6 +10,7 @@
     "typescript": "^5"
   },
   "dependencies": {
-    "hono": "^4.11.9"
+    "hono": "^4.11.9",
+    "common": "workspace:*"
   }
 }

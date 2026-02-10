@@ -1,6 +1,6 @@
 import { FlatList, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
-import { AllNFLRosters, NFL_POSITIONS, ROSTER_POSITIONS, NFL_TEAMS, NFLPlayer, NFLPosition, NFLTeam, NFLTeamRoster, NFLRosterPosition, GENERAL_STATE } from './types';
+import { AllNFLRosters, NFL_POSITIONS, ROSTER_POSITIONS, NFL_TEAMS, NFLPlayer, NFLPosition, NFLTeam, NFLTeamRoster, NFLRosterPosition, GENERAL_STATE } from 'common/types';
 import { Dispatch, SetStateAction, useEffect, useState } from 'react';
 
 import '@/global.css';
@@ -61,18 +61,14 @@ function fillBlankRoster() {
 }
 
 function shuffle<T>(arr: T[]): T[] {
-    // Create a copy of the array
     const newArr = [...arr]; 
     let currentIndex = newArr.length;
     let randomIndex;
 
-    // While there remain elements to shuffle.
     while (currentIndex !== 0) {
-        // Pick a remaining element.
         randomIndex = Math.floor(Math.random() * currentIndex);
         currentIndex--;
 
-        // And swap it with the current element.
         [newArr[currentIndex], newArr[randomIndex]] = [
             newArr[randomIndex], newArr[currentIndex]
         ];
