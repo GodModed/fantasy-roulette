@@ -47,7 +47,7 @@ app.get('/getCode', (c) => {
 		code
 	});
 });
-app.get('/join/:id/:name', async (c) => {
+app.get('/join/:id/:name', (c) => {
 	const code = c.req.param('id');
 	if (games[code] == null) {
 		c.status(404);
