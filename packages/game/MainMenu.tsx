@@ -1,11 +1,11 @@
 import { ComponentType, createElement, Dispatch, FC, ReactNode, SetStateAction, useState } from "react";
-import Game from "./Game";
 import { GENERAL_STATE } from "common/types";
 import { GluestackUIProvider } from "./components/ui/gluestack-ui-provider";
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
-import Home from "./Home";
-import Host from "./Host";
-import Join from "./Join";
+import Game from "./screens/Game";
+import Home from "./screens/Home";
+import Host from "./screens/Host";
+import Join from "./screens/Join";
 import { Text, View } from "react-native";
 import { Button } from "./components/ui/button";
 
