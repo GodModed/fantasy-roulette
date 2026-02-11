@@ -1,5 +1,4 @@
 import { FlatList, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
-import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
 import { AllNFLRosters, NFL_POSITIONS, ROSTER_POSITIONS, NFL_TEAMS, NFLPlayer, NFLPosition, NFLTeam, NFLTeamRoster, NFLRosterPosition, GENERAL_STATE } from 'common/types';
 import { Dispatch, SetStateAction, useEffect, useState } from 'react';
 

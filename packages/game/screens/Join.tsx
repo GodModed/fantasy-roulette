@@ -17,13 +17,13 @@ export default function Join({
 }) {
 
 
-	const codeRef = useRef<TextInputProps>(null); // TODO: Make use state
-	const nameRef = useRef<TextInputProps>(null); // TODO: make use state
+	const [code, setCode] = useState<string>("");
+	const [name, setName] = useState<string>("");
 
 	const [waiting, setWaiting] = useState<boolean>(false);
 	useEffect(() => {
 		if (!waiting) return;
-		const es = new EventSource<"start">(API_URL + "/hostStream/" + codeRef.current?.value, {
+		const es = new EventSource<"start">(API_URL + "/hostStream/" + code, {
 			lineEndingCharacter: "\n"
 		});
 		es.addEventListener("start", (event) => {
@@ -41,7 +41,7 @@ export default function Join({
 	}, [waiting]);
 
 	function onClick() {
-		fetch(API_URL + "/join/" + codeRef.current?.value + "/" + nameRef.current?.value).then((res) => {
+		fetch(API_URL + "/join/" + code + "/" + name).then((res) => {
 			if (res.status == 200) setWaiting(true);
 			else {
 				setWaiting(false);
@@ -57,11 +57,11 @@ export default function Join({
 		<>
 			<Box className="flex-row p-4 items-center">
 				<Input className="mx-4">
-					<InputField ref={codeRef} placeholder="Code"></InputField>
+					<InputField value={code} onChangeText={setCode} placeholder="Code"></InputField>
 				</Input>
 
 				<Input className="mx-4">
-					<InputField ref={nameRef} placeholder="Name"></InputField>
+					<InputField value={name} onChangeText={setName} placeholder="Name"></InputField>
 				</Input>
 
 				<Button className="mx-4" onPress={onClick} disabled={waiting}>

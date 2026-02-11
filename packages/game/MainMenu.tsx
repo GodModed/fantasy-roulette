@@ -8,6 +8,7 @@ import Host from "./screens/Host";
 import Join from "./screens/Join";
 import { Text, View } from "react-native";
 import { Button } from "./components/ui/button";
+import { OverlayProvider } from "@gluestack-ui/overlay";
 
 export default function MainMenu() {
 	const [globalState, setGlobalState] = useState<GENERAL_STATE>({
@@ -17,35 +18,36 @@ export default function MainMenu() {
 	});
 
 	return <>
-        
 		<GluestackUIProvider mode="dark">
-			<SafeAreaProvider>
-				<View className='flex justify-center items-center h-screen bg-zinc-900'>
-					<SafeAreaView>
-						{globalState.screen != "HOME" && (
-							<Button
-								className='bg-zinc-800 m-2 hover:bg-zinc-900'
-								onPress={() => setGlobalState(s => ({
-									...s,
-									screen: "HOME"
-								}))}
-							>
-								<Text className="text-white text-base">Back</Text>
-							</Button>
-						)}
-						<Switch
-							globalState={globalState}
-							setGlobalState={setGlobalState}
-							keys={{
-								"SOLO": Game,
-								"HOST": Host,
-								"HOME": Home,
-								"JOIN": Join
-							}}
-						/>
-					</SafeAreaView>
-				</View>
-			</SafeAreaProvider>
+			<OverlayProvider>
+				<SafeAreaProvider>
+					<View className='flex justify-center items-center h-screen bg-zinc-900'>
+						<SafeAreaView>
+							{globalState.screen != "HOME" && (
+								<Button
+									className='bg-zinc-800 m-2 hover:bg-zinc-900'
+									onPress={() => setGlobalState(s => ({
+										...s,
+										screen: "HOME"
+									}))}
+								>
+									<Text className="text-white text-base">Back</Text>
+								</Button>
+							)}
+							<Switch
+								globalState={globalState}
+								setGlobalState={setGlobalState}
+								keys={{
+									"SOLO": Game,
+									"HOST": Host,
+									"HOME": Home,
+									"JOIN": Join
+								}}
+							/>
+						</SafeAreaView>
+					</View>
+				</SafeAreaProvider>
+			</OverlayProvider>
 		</GluestackUIProvider>
 	        
 	</>
