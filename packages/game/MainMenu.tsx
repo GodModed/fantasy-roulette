@@ -1,4 +1,4 @@
-import { ComponentType, createElement, Dispatch, FC, ReactNode, SetStateAction, useState } from "react";
+import { createElement, Dispatch, FC, ReactNode, SetStateAction, useState } from "react";
 import { GENERAL_STATE } from "common/types";
 import { GluestackUIProvider } from "./components/ui/gluestack-ui-provider";
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
@@ -13,8 +13,9 @@ import { OverlayProvider } from "@gluestack-ui/overlay";
 export default function MainMenu() {
 	const [globalState, setGlobalState] = useState<GENERAL_STATE>({
 		screen: "HOME",
-		playing: false,
-		hosting: false	
+		online: false,
+		hosting: false,
+		code: ""	
 	});
 
 	return <>
@@ -28,6 +29,8 @@ export default function MainMenu() {
 									className='bg-zinc-800 m-2 hover:bg-zinc-900'
 									onPress={() => setGlobalState(s => ({
 										...s,
+										online: false,
+										code: "",
 										screen: "HOME"
 									}))}
 								>

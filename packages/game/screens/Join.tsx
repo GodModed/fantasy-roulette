@@ -1,10 +1,11 @@
-import { Dispatch, SetStateAction, useEffect, useRef, useState } from "react";
+import { Dispatch, SetStateAction, useEffect, useMemo, useRef, useState } from "react";
 import { GENERAL_STATE, SCREEN } from "common/types";
 import { Text, TextInputProps } from "react-native";
 import { Box } from "../components/ui/box";
 import { Input, InputField } from "../components/ui/input";
 import { Button } from "../components/ui/button";
 import EventSource from "react-native-sse";
+import useEventStream, { ListenerMap } from "@/hooks/stream";
 
 const API_URL = "http://10.212.46.68:3000";
 
@@ -21,24 +22,17 @@ export default function Join({
 	const [name, setName] = useState<string>("");
 
 	const [waiting, setWaiting] = useState<boolean>(false);
-	useEffect(() => {
-		if (!waiting) return;
-		const es = new EventSource<"start">(API_URL + "/hostStream/" + code, {
-			lineEndingCharacter: "\n"
-		});
-		es.addEventListener("start", (event) => {
-			setGlobalState(s => ({
-				...s,
-				screen: "SOLO"
-			}));
-		});
 
-		return (() => {
-			es.removeAllEventListeners();
-			es.close();
-		});
+	const listeners: Partial<ListenerMap> = useMemo(() => ({
+	    start: (event) => {
+	        setGlobalState(s => ({
+	        	...s,
+	        	screen: "SOLO"
+	        }));
+	    }
+	}), []);
 
-	}, [waiting]);
+	useEventStream(code, waiting, listeners);
 
 	function onClick() {
 		fetch(API_URL + "/join/" + code + "/" + name).then((res) => {

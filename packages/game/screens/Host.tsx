@@ -1,10 +1,12 @@
-import { Dispatch, SetStateAction, useEffect, useState } from "react";
+import { Dispatch, SetStateAction, useEffect, useMemo, useState } from "react";
 import { GENERAL_STATE } from "common/types";
 import { Text } from "react-native";
 import { Box } from "../components/ui/box";
 import { Input, InputField } from "../components/ui/input";
 import { Button } from "../components/ui/button";
 import EventSource from "react-native-sse";
+import useEventStream, { ListenerMap } from "@/hooks/stream";
+import { listen } from "bun";
 
 const API_URL = "http://10.212.46.68:3000";
 
@@ -26,25 +28,15 @@ export default function Host({
 		console.log("Created", id);
 	}, []);
 
-	useEffect(() => {
-		if (id == "XXXXXX") return;
-		console.log(id);
-		const es = new EventSource<"join">(API_URL + "/hostStream/" + id, {
-			lineEndingCharacter: "\n"
-		});
-		es.addEventListener("join", (event) => {
-			const data = event.data;
-			console.log(data);
-			if (!data) return;
-			setNames(n => ([...n, data]));
-		});
+	const listeners: Partial<ListenerMap> = useMemo(() => ({
+	    join: (event) => {
+	        const data = event.data;
+	        if (!data) return;
+	        setNames(n => ([...n, data]));
+	    }
+	}), []);
 
-		return (() => {
-			es.removeAllEventListeners();
-			es.close();
-		});
-
-	}, [id]);
+	useEventStream(id, id != "XXXXXX", listeners);
 
 	function onStart() {
 		fetch(API_URL + "/start/" + id)

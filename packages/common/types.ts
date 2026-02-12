@@ -62,22 +62,23 @@ export type NFLPlayer = {
     position: NFLPosition;
     team: NFLTeam;
     fpts: number;
-}
+};
 
 export type NFLTeamRoster = {
     [position in NFLPosition]?: NFLPlayer[];
-}
+};
 
 export type AllNFLRosters = {
     [T in NFLTeam]?: NFLTeamRoster;
-}
+};
 
 export const SCREEN = [ "HOME", "JOIN", "HOST", "SOLO" ] as const;
 export type SCREEN = typeof SCREEN[number];
 export type GENERAL_STATE = {
     screen: SCREEN,
-    playing: boolean,
-    hosting: boolean
+    online: boolean,
+    hosting: boolean,
+    code: string
 };
 
 export type ServerPlayer = {
