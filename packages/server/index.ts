@@ -3,6 +3,7 @@ import { cors } from 'hono/cors';
 import { streamSSE, SSEStreamingApi } from 'hono/streaming';
 import { EventEmitter } from 'node:events';
 import type { ServerPlayer, ServerGame } from "common/types";
+import { listeners } from 'node:cluster';
 const app = new Hono();
 app.use('*', cors());
 
@@ -33,8 +34,11 @@ app.get('/getCode', (c) => {
 	const code = getUniqueCode();
 	games[code] = {
 		date: Date.now(),
-		players: []
-	};
+		players: [],
+		listeners: 0,
+		started: false,
+		teamOrder: []
+	}
 
 	console.log("Created room", code);
 
@@ -79,12 +83,20 @@ app.get('/hostStream/:id', (c) => {
 	}
 	const game = games[code];
 	return streamSSE(c, async (stream) => {
+
+		game.listeners++;
+
+		if (game.started) {
+			await stream.writeSSE({ event: 'team-order', data: "" })
+		}
+
 		let aborted = false;
 		const onJoin = async (name: string) => {
 			await stream.writeSSE({ event: 'join', data: name });
 		};
 
 		const onStart = async () => {
+			game.started = true;
 			await stream.writeSSE({ event: 'start', data: '' });
 		};
 
@@ -95,6 +107,12 @@ app.get('/hostStream/:id', (c) => {
 			console.log("Host stream ended");
 			hostRoomEmitter.off("join-" + code, onJoin);
 			hostRoomEmitter.off("start-" + code, onStart);
+			game.listeners--;
+			if (game.listeners == 0 && !game.started) {
+				delete games[code];
+				console.log("Removed inactive room");
+			}
+
 		});
 
 		while (!aborted) {

@@ -17,7 +17,6 @@ export default function Join({
 	setGlobalState: Dispatch<SetStateAction<GENERAL_STATE>>
 }) {
 
-
 	const [code, setCode] = useState<string>("");
 	const [name, setName] = useState<string>("");
 
@@ -27,7 +26,9 @@ export default function Join({
 	    start: (event) => {
 	        setGlobalState(s => ({
 	        	...s,
-	        	screen: "SOLO"
+	        	screen: "GAME",
+	        	code,
+	        	online: true
 	        }));
 	    }
 	}), []);
@@ -40,10 +41,6 @@ export default function Join({
 			else {
 				setWaiting(false);
 			}
-			// setGlobalState(s => ({
-			// 	...s,
-			// 	screen: nextScreen
-			// }));
 		})
 	}
 

@@ -72,7 +72,7 @@ export type AllNFLRosters = {
     [T in NFLTeam]?: NFLTeamRoster;
 };
 
-export const SCREEN = [ "HOME", "JOIN", "HOST", "SOLO" ] as const;
+export const SCREEN = [ "HOME", "JOIN", "HOST", "GAME" ] as const;
 export type SCREEN = typeof SCREEN[number];
 export type GENERAL_STATE = {
     screen: SCREEN,
@@ -87,5 +87,10 @@ export type ServerPlayer = {
 
 export type ServerGame = {
     date: number,
-    players: ServerPlayer[]
+    players: ServerPlayer[],
+    listeners: number,
+    started: boolean,
+    teamOrder: NFLTeam[]
 };
+
+export type ServerEvent = "join" | "start" | "team";

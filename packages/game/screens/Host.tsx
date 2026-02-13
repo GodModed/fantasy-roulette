@@ -41,7 +41,12 @@ export default function Host({
 	function onStart() {
 		fetch(API_URL + "/start/" + id)
 			.then(res => {
-
+				setGlobalState(s => ({
+					...s,
+					screen: "GAME",
+					online: true,
+					hosting: true
+				}));
 			});
 	}
 

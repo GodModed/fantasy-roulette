@@ -41,7 +41,7 @@ export default function MainMenu() {
 								globalState={globalState}
 								setGlobalState={setGlobalState}
 								keys={{
-									"SOLO": Game,
+									"GAME": Game,
 									"HOST": Host,
 									"HOME": Home,
 									"JOIN": Join
