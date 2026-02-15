@@ -8,7 +8,7 @@ import EventSource from "react-native-sse";
 import useEventStream, { ListenerMap } from "@/hooks/stream";
 import { listen } from "bun";
 
-const API_URL = "http://10.212.46.68:3000";
+const API_URL = "http://localhost:3000";
 
 export default function Host({
 	globalState,

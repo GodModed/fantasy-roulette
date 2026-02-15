@@ -3,7 +3,6 @@ import { cors } from 'hono/cors';
 import { streamSSE, SSEStreamingApi } from 'hono/streaming';
 import { EventEmitter } from 'node:events';
 import type { ServerPlayer, ServerGame } from "common/types";
-import { listeners } from 'node:cluster';
 const app = new Hono();
 app.use('*', cors());
 

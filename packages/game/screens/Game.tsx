@@ -1,4 +1,5 @@
 import { Text } from 'react-native';
+import { shuffle } from 'common';
 import { ROSTER_POSITIONS, NFL_TEAMS, NFLPlayer, NFLTeam, NFLRosterPosition, GENERAL_STATE } from 'common/types';
 import { Dispatch, SetStateAction, useEffect, useState } from 'react';
 
