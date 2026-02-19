@@ -1,12 +1,13 @@
 import { Text } from 'react-native';
 import { shuffle } from 'common';
 import { ROSTER_POSITIONS, NFL_TEAMS, NFLPlayer, NFLTeam, NFLRosterPosition, GENERAL_STATE } from 'common/types';
-import { Dispatch, SetStateAction, useEffect, useState } from 'react';
+import { Dispatch, SetStateAction, useEffect, useMemo, useState } from 'react';
 
 import '@/global.css';
 import { Box } from '../components/ui/box';
 
 import PlayerSelector from '@/components/game/PlayerSelector';
+import useEventStream, { ListenerMap } from '@/hooks/stream';
 
 function fillBlankRoster() {
     const roster = {} as Record<NFLRosterPosition, NFLPlayer | null>;
@@ -25,11 +26,15 @@ export default function Game({
 }) {
 
     const [roster, setRoster] = useState<ReturnType<typeof fillBlankRoster>>(fillBlankRoster());
-    const [teams, _] = useState<NFLTeam[]>(shuffle([...NFL_TEAMS]));
+    const [teams, setTeams] = useState<NFLTeam[]>(shuffle([...NFL_TEAMS]));
 
-    useEffect(() => {
-        console.log(teams);
-    }, []);
+    const listeners: Partial<ListenerMap> = useMemo(() => ({
+        team: (e) => {
+            setTeams(JSON.parse(e.data ?? "[]"));
+        }
+    }), []);
+
+    useEventStream(globalState.code, globalState.online, listeners);
 
     const [teamIdx, setTeamIdx] = useState<number>(0);
 

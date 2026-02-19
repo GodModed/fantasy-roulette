@@ -2,7 +2,8 @@ import { Hono } from 'hono';
 import { cors } from 'hono/cors';
 import { streamSSE, SSEStreamingApi } from 'hono/streaming';
 import { EventEmitter } from 'node:events';
-import type { ServerPlayer, ServerGame } from "common/types";
+import { type ServerPlayer, type ServerGame, NFL_TEAMS } from "common/types";
+import { shuffle } from 'common';
 const app = new Hono();
 app.use('*', cors());
 
@@ -86,7 +87,7 @@ app.get('/hostStream/:id', (c) => {
 		game.listeners++;
 
 		if (game.started) {
-			await stream.writeSSE({ event: 'team-order', data: "" })
+			await stream.writeSSE({ event: 'team', data: JSON.stringify(game.teamOrder) })
 		}
 
 		let aborted = false;
@@ -96,6 +97,7 @@ app.get('/hostStream/:id', (c) => {
 
 		const onStart = async () => {
 			game.started = true;
+			game.teamOrder = shuffle([...NFL_TEAMS]);
 			await stream.writeSSE({ event: 'start', data: '' });
 		};
 

@@ -31,7 +31,7 @@ export default function Join({
 	        	online: true
 	        }));
 	    }
-	}), []);
+	}), [code]);
 
 	useEventStream(code, waiting, listeners);
 

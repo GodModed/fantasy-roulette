@@ -6,7 +6,6 @@ import { Input, InputField } from "../components/ui/input";
 import { Button } from "../components/ui/button";
 import EventSource from "react-native-sse";
 import useEventStream, { ListenerMap } from "@/hooks/stream";
-import { listen } from "bun";
 
 const API_URL = "http://localhost:3000";
 
@@ -20,6 +19,9 @@ export default function Host({
 
 	const [id, setID] = useState<string>("XXXXXX");
 	const [names, setNames] = useState<string[]>([]);
+
+	const [hostName, setHostName] = useState<string>();
+
 	useEffect(() => {
 		fetch(API_URL + "/getCode")
 			.then(res => res.json())
@@ -38,16 +40,16 @@ export default function Host({
 
 	useEventStream(id, id != "XXXXXX", listeners);
 
-	function onStart() {
-		fetch(API_URL + "/start/" + id)
-			.then(res => {
-				setGlobalState(s => ({
-					...s,
-					screen: "GAME",
-					online: true,
-					hosting: true
-				}));
-			});
+	async function onStart() {
+		await fetch(API_URL + "/join/" + id + "/" + hostName);
+		const res = await fetch(API_URL + "/start/" + id)
+		setGlobalState(s => ({
+			...s,
+			screen: "GAME",
+			online: true,
+			hosting: true,
+			code: id
+		}));
 	}
 
 	// make network request here to get id generated for game
@@ -60,7 +62,7 @@ export default function Host({
 				</Text>
 
 				<Input className="mx-4">
-					<InputField placeholder="Name"></InputField>
+					<InputField placeholder="Name" value={hostName} onChangeText={setHostName}></InputField>
 				</Input>
 
 				<Button className="mx-4" onPress={onStart}>
