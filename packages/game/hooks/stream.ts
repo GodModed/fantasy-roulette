@@ -2,7 +2,7 @@ import { useEffect } from "react";
 import EventSource, { EventSourceListener } from "react-native-sse";
 import { ServerEvent } from "common/types"
 
-const url = "http://localhost:3000/hostStream/";
+const url = "http://10.168.168.146:3000/hostStream/";
 
 
 export type ListenerMap = {

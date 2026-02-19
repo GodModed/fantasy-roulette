@@ -7,7 +7,7 @@ import { Button } from "../components/ui/button";
 import EventSource from "react-native-sse";
 import useEventStream, { ListenerMap } from "@/hooks/stream";
 
-const API_URL = "http://localhost:3000";
+const API_URL = "http://10.168.168.146:3000";
 
 export default function Host({
 	globalState,
@@ -20,7 +20,7 @@ export default function Host({
 	const [id, setID] = useState<string>("XXXXXX");
 	const [names, setNames] = useState<string[]>([]);
 
-	const [hostName, setHostName] = useState<string>();
+	const [hostName, setHostName] = useState<string>("");
 
 	useEffect(() => {
 		fetch(API_URL + "/getCode")
@@ -48,7 +48,8 @@ export default function Host({
 			screen: "GAME",
 			online: true,
 			hosting: true,
-			code: id
+			code: id,
+			name: hostName
 		}));
 	}
 

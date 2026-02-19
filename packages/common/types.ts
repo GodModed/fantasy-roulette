@@ -78,7 +78,8 @@ export type GENERAL_STATE = {
     screen: SCREEN,
     online: boolean,
     hosting: boolean,
-    code: string
+    code: string,
+    name: string
 };
 
 export type ServerPlayer = {
@@ -90,7 +91,7 @@ export type ServerGame = {
     players: ServerPlayer[],
     listeners: number,
     started: boolean,
-    teamOrder: NFLTeam[]
+    teamOrder: NFLTeam[],
 };
 
 export type ServerEvent = "join" | "start" | "team";

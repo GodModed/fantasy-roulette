@@ -24,7 +24,8 @@ export default function Home({
 						className='bg-zinc-800 hover:bg-zinc-900'
 						onPress={() => setGlobalState(s => ({
 							...s,
-							screen: status
+							screen: status,
+							online: false
 						}))}
 					>
 						<Text className="text-white text-base" >{status}</Text>

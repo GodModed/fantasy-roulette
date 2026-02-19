@@ -7,7 +7,7 @@ import { Button } from "../components/ui/button";
 import EventSource from "react-native-sse";
 import useEventStream, { ListenerMap } from "@/hooks/stream";
 
-const API_URL = "http://localhost:3000";
+const API_URL = "http://10.168.168.146:3000";
 
 export default function Join({
 	globalState,

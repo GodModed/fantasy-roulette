@@ -15,7 +15,8 @@ export default function MainMenu() {
 		screen: "HOME",
 		online: false,
 		hosting: false,
-		code: ""	
+		code: "",
+		name: ""
 	});
 
 	return <>
