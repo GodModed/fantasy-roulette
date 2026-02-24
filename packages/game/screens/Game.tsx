@@ -1,6 +1,6 @@
 import { Text } from 'react-native';
-import { shuffle } from 'common';
-import { ROSTER_POSITIONS, NFL_TEAMS, NFLPlayer, NFLTeam, NFLRosterPosition, GENERAL_STATE } from 'common/types';
+import { rosterIsComplete, shuffle } from 'common';
+import { ROSTER_POSITIONS, NFL_TEAMS, NFLPlayer, NFLTeam, NFLRosterPosition, GENERAL_STATE, Roster, API_URL } from 'common/types';
 import { Dispatch, SetStateAction, useEffect, useMemo, useState } from 'react';
 
 import '@/global.css';
@@ -8,14 +8,8 @@ import { Box } from '../components/ui/box';
 
 import PlayerSelector from '@/components/game/PlayerSelector';
 import useEventStream, { ListenerMap } from '@/hooks/stream';
-
-function fillBlankRoster() {
-    const roster = {} as Record<NFLRosterPosition, NFLPlayer | null>;
-    for (const pos of ROSTER_POSITIONS) {
-        roster[pos] = null;
-    }
-    return roster;
-}
+import RosterDisplay from '@/components/game/RosterDisplay';
+import Join from './Join';
 
 export default function Game({
     globalState,
@@ -25,7 +19,16 @@ export default function Game({
     setGlobalState: Dispatch<SetStateAction<GENERAL_STATE>>
 }) {
 
-    const [roster, setRoster] = useState<ReturnType<typeof fillBlankRoster>>(fillBlankRoster());
+    const [roster, setRoster] = useState<Roster>({
+        "QB": null,
+        "WR 1": null,
+        "WR 2": null,
+        "RB 1": null,
+        "RB 2": null,
+        "TE": null,
+        "FLEX": null
+    });
+
     const [teams, setTeams] = useState<NFLTeam[]>(shuffle([...NFL_TEAMS]));
 
     const listeners: Partial<ListenerMap> = useMemo(() => ({
@@ -45,30 +48,38 @@ export default function Game({
         fpts += roster[pos]?.fpts || 0;
     }
 
+    const isFinished = useMemo(() => {
+        return rosterIsComplete(roster)
+    }, [roster]);
+    useEffect(() => {
+        if (!isFinished || !globalState.online) return;
+
+        fetch(API_URL + "/done/" + globalState.code + "/" + globalState.name + "?roster=" + JSON.stringify(roster))
+            .then(() => {
+                setGlobalState(s => ({
+                    ...s,
+                    screen: "RESULTS"
+                }))
+            });
+
+    }, [isFinished]);
+
 
     return (
         <>
             <Box className='p-5'>
 
-                <Text className="text-center text-white text-base m-2">{team}</Text>
+                <Text className="text-center text-white text-base m-2">{isFinished ? "Done!" : team}</Text>
 
                 {/*<PlayerSelector pos={NFL_POSITIONS[0]} team={NFL_TEAMS[0]} />*/}
-                {ROSTER_POSITIONS.map(pos => (
-                    <PlayerSelector
-                        key={pos}
-                        pos={pos}
-                        team={team}
-                        selectedPlayer={roster[pos]}
-                        setSelectedPlayer={(p) => {
-                            setRoster(prev => ({
-                                ...prev,
-                                [pos]: p
-                            }));
-
-                            setTeamIdx(prev => prev + 1);
-
-                        }} />
-                ))}
+                <RosterDisplay
+                    roster={roster}
+                    setRoster={setRoster}
+                    team={team}
+                    nextTeam={() => {
+                        setTeamIdx(i => i + 1);
+                    }}
+                />
 
                 <Text className="text-center text-white text-base m-2">FPTS: {fpts.toFixed(2)}</Text>
 

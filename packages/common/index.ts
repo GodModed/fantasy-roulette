@@ -1,3 +1,5 @@
+import type { Roster } from "./types";
+
 export function shuffle<T>(arr: T[]): T[] {
     const newArr = [...arr]; 
     let currentIndex = newArr.length;
@@ -7,10 +9,26 @@ export function shuffle<T>(arr: T[]): T[] {
         randomIndex = Math.floor(Math.random() * currentIndex);
         currentIndex--;
 
-        [newArr[currentIndex], newArr[randomIndex]] = [
-            newArr[randomIndex], newArr[currentIndex]
-        ];
+        const rand = newArr[randomIndex];
+        const curr = newArr[currentIndex];
+        if (rand && curr) {
+            newArr[currentIndex] = rand;
+            newArr[randomIndex] = curr;
+        }
+
     }
 
     return newArr;
 };
+
+function objectKeys<TObj extends Record<any, any>>(obj: TObj): Array<keyof TObj> {
+    return Object.keys(obj) as Array<keyof TObj>;
+}
+
+
+export function rosterIsComplete(roster: Roster): boolean {
+    for (const key of objectKeys(roster)) {
+        if (!roster[key]) return false;
+    }
+    return true;
+}

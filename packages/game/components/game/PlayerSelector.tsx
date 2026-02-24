@@ -9,9 +9,9 @@ export default function PlayerSelector({
     selectedPlayer,
     setSelectedPlayer
 }: {
-    pos: NFLRosterPosition, team: NFLTeam,
+    pos: NFLRosterPosition, team?: NFLTeam,
     selectedPlayer: NFLPlayer | null,
-    setSelectedPlayer: (player: NFLPlayer) => void
+    setSelectedPlayer?: (player: NFLPlayer) => void
 }) {
 
     const [open, setOpen] = useState<boolean>(false);
@@ -26,31 +26,34 @@ export default function PlayerSelector({
             </Select>
 
 
-            <Actionsheet
-                className='border border-solid border-zinc-900'
-                isOpen={open && selectedPlayer == null}
-                onClose={() => setOpen(false)}
-            >
-                <ActionsheetBackdrop />
-                <ActionsheetContent style={{ maxHeight: 300 }}>
-                    <ActionsheetDragIndicatorWrapper>
-                        <ActionsheetDragIndicator />
-                    </ActionsheetDragIndicatorWrapper>
-                    <ActionsheetItem onPress={() => setOpen(false)}>
-                        <ActionsheetItemText>Close</ActionsheetItemText>
-                    </ActionsheetItem>
-                    <ActionsheetScrollView>
-                        {getAllPlayers(team, pos.split(" ")[0] as NFLPosition | "FLEX").map(player => (
-                            <ActionsheetItem key={player.name} onPress={() => {
-                                setOpen(false);
-                                setSelectedPlayer(player)
-                            }}>
-                                <ActionsheetItemText>{player.name}</ActionsheetItemText>
-                            </ActionsheetItem>
-                        ))}
-                    </ActionsheetScrollView>
-                </ActionsheetContent>
-            </Actionsheet>
+
+            {setSelectedPlayer && team && 
+                <Actionsheet
+                    className='border border-solid border-zinc-900'
+                    isOpen={open && selectedPlayer == null}
+                    onClose={() => setOpen(false)}
+                >
+                    <ActionsheetBackdrop />
+                    <ActionsheetContent style={{ maxHeight: 300 }}>
+                        <ActionsheetDragIndicatorWrapper>
+                            <ActionsheetDragIndicator />
+                        </ActionsheetDragIndicatorWrapper>
+                        <ActionsheetItem onPress={() => setOpen(false)}>
+                            <ActionsheetItemText>Close</ActionsheetItemText>
+                        </ActionsheetItem>
+                        <ActionsheetScrollView>
+                            {getAllPlayers(team, pos.split(" ")[0] as NFLPosition | "FLEX").map(player => (
+                                <ActionsheetItem key={player.name} onPress={() => {
+                                    setOpen(false);
+                                    setSelectedPlayer(player)
+                                }}>
+                                    <ActionsheetItemText>{player.name}</ActionsheetItemText>
+                                </ActionsheetItem>
+                            ))}
+                        </ActionsheetScrollView>
+                    </ActionsheetContent>
+                </Actionsheet>
+            }
         </>
     )
 }

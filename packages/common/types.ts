@@ -72,7 +72,9 @@ export type AllNFLRosters = {
     [T in NFLTeam]?: NFLTeamRoster;
 };
 
-export const SCREEN = [ "HOME", "JOIN", "HOST", "GAME" ] as const;
+export type Roster = Record<NFLRosterPosition, NFLPlayer | null>;
+
+export const SCREEN = [ "HOME", "JOIN", "HOST", "GAME", "RESULTS" ] as const;
 export type SCREEN = typeof SCREEN[number];
 export type GENERAL_STATE = {
     screen: SCREEN,
@@ -83,7 +85,8 @@ export type GENERAL_STATE = {
 };
 
 export type ServerPlayer = {
-    name: string
+    name: string,
+    roster?: Roster
 };
 
 export type ServerGame = {
@@ -94,4 +97,6 @@ export type ServerGame = {
     teamOrder: NFLTeam[],
 };
 
-export type ServerEvent = "join" | "start" | "team";
+export type ServerEvent = "join" | "start" | "team" | "roster";
+
+export const API_URL = "http://10.168.168.146:3000";

@@ -2,9 +2,12 @@ import { Hono } from 'hono';
 import { cors } from 'hono/cors';
 import { streamSSE, SSEStreamingApi } from 'hono/streaming';
 import { EventEmitter } from 'node:events';
-import { type ServerPlayer, type ServerGame, NFL_TEAMS } from "common/types";
+import { type ServerPlayer, type ServerGame, NFL_TEAMS, type Roster } from "common/types";
 import { shuffle } from 'common';
+import { logger } from 'hono/logger';
 const app = new Hono();
+
+app.use(logger());
 app.use('*', cors());
 
 function getRandomCode(): string {
@@ -75,6 +78,18 @@ app.get('/start/:id', (c) => {
 	c.status(200);
 	return c.text("Started");
 });
+app.get('/done/:id/:name', async (c) => {
+	const code = c.req.param('id');
+	const game = games[code];
+	if (!game) return c.text("Not found", 404);
+	const name = c.req.param('name');
+	const player = game.players.find(p => p.name == name);
+	if (!player) return c.text("Player not found", 404);
+	const roster = c.req.query().roster as string;
+	player.roster = JSON.parse(roster);
+	hostRoomEmitter.emit("roster-" + code);
+	return c.text("Done!");
+});
 app.get('/hostStream/:id', (c) => {
 	const code = c.req.param('id');
 	if (games[code] == null) {
@@ -88,6 +103,7 @@ app.get('/hostStream/:id', (c) => {
 
 		if (game.started) {
 			await stream.writeSSE({ event: 'team', data: JSON.stringify(game.teamOrder) })
+			await stream.writeSSE({ event: 'roster', data: JSON.stringify(game.players) })
 		}
 
 		let aborted = false;
@@ -101,13 +117,19 @@ app.get('/hostStream/:id', (c) => {
 			await stream.writeSSE({ event: 'start', data: '' });
 		};
 
+		const onDone = async () => {
+			await stream.writeSSE({ event: 'roster', data: JSON.stringify(game.players) });
+		}
+
 		hostRoomEmitter.on("join-" + code, onJoin);
 		hostRoomEmitter.on("start-" + code, onStart);
+		hostRoomEmitter.on("roster-" + code, onDone);
 		stream.onAbort(() => {
 			aborted = true;
 			console.log("Host stream ended");
 			hostRoomEmitter.off("join-" + code, onJoin);
 			hostRoomEmitter.off("start-" + code, onStart);
+			hostRoomEmitter.off("roster-" + code, onDone);
 			game.listeners--;
 			if (game.listeners == 0 && !game.started) {
 				delete games[code];

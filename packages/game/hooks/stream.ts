@@ -1,9 +1,8 @@
 import { useEffect } from "react";
 import EventSource, { EventSourceListener } from "react-native-sse";
-import { ServerEvent } from "common/types"
+import { API_URL, ServerEvent } from "common/types"
 
-const url = "http://10.168.168.146:3000/hostStream/";
-
+const url = API_URL + "/hostStream/";
 
 export type ListenerMap = {
 	[k in ServerEvent]: EventSourceListener<ServerEvent, k>

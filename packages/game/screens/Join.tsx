@@ -1,13 +1,11 @@
 import { Dispatch, SetStateAction, useEffect, useMemo, useRef, useState } from "react";
-import { GENERAL_STATE, SCREEN } from "common/types";
+import { API_URL, GENERAL_STATE, SCREEN } from "common/types";
 import { Text, TextInputProps } from "react-native";
 import { Box } from "../components/ui/box";
 import { Input, InputField } from "../components/ui/input";
 import { Button } from "../components/ui/button";
 import EventSource from "react-native-sse";
 import useEventStream, { ListenerMap } from "@/hooks/stream";
-
-const API_URL = "http://10.168.168.146:3000";
 
 export default function Join({
 	globalState,
@@ -28,10 +26,11 @@ export default function Join({
 	        	...s,
 	        	screen: "GAME",
 	        	code,
-	        	online: true
+	        	online: true,
+	        	name
 	        }));
 	    }
-	}), [code]);
+	}), [code, name]);
 
 	useEventStream(code, waiting, listeners);
 

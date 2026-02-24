@@ -9,6 +9,7 @@ import Join from "./screens/Join";
 import { Text, View } from "react-native";
 import { Button } from "./components/ui/button";
 import { OverlayProvider } from "@gluestack-ui/overlay";
+import Results from "./screens/Results";
 
 export default function MainMenu() {
 	const [globalState, setGlobalState] = useState<GENERAL_STATE>({
@@ -23,8 +24,8 @@ export default function MainMenu() {
 		<GluestackUIProvider mode="dark">
 			<OverlayProvider>
 				<SafeAreaProvider>
-					<View className='flex justify-center items-center h-screen bg-zinc-900'>
-						<SafeAreaView>
+					<View className='flex justify-center items-center h-screen bg-zinc-900 flex-1'>
+						<SafeAreaView className="flex-1">
 							{globalState.screen != "HOME" && (
 								<Button
 									className='bg-zinc-800 m-2 hover:bg-zinc-900'
@@ -45,7 +46,8 @@ export default function MainMenu() {
 									"GAME": Game,
 									"HOST": Host,
 									"HOME": Home,
-									"JOIN": Join
+									"JOIN": Join,
+									"RESULTS": Results
 								}}
 							/>
 						</SafeAreaView>
