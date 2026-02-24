@@ -1,6 +1,6 @@
 import { ScrollView, Text, View } from "react-native";
 import { Button, ButtonGroup } from "../components/ui/button";
-import { GENERAL_STATE, ROSTER_POSITIONS, SCREEN, ServerPlayer } from "common/types";
+import { API_URL, GENERAL_STATE, ROSTER_POSITIONS, SCREEN, ServerPlayer } from "common/types";
 import { Dispatch, SetStateAction, useMemo, useState } from "react";
 import useEventStream, { ListenerMap } from "@/hooks/stream";
 import { Box } from "@/components/ui/box";
@@ -20,6 +20,12 @@ export default function Results({
 		roster: (e) => {
 			const newPlayers = JSON.parse(e.data ?? "") as ServerPlayer[];
 			setPlayers(newPlayers);
+		},
+		start: (e) => {
+			setGlobalState(s => ({
+				...s,
+				screen: "GAME",
+			}))
 		}
 	}), []);
 
@@ -40,9 +46,15 @@ export default function Results({
 		return map;
 	}, [players]);
 
+	async function onAgain() {
+		const res = await fetch(API_URL + "/start/" + globalState.code);
+	}
 
 	
-	return <View className="flex-1"> 
+	return <View className="flex-1">
+		{globalState.hosting && <Button className="m-4" onPress={onAgain}>
+			<Text>Again?</Text>
+		</Button>} 
 		<ScrollView
 			className="flex-1"
 			contentContainerStyle={{

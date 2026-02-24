@@ -19,14 +19,12 @@ export default function Host({
 	const [id, setID] = useState<string>("XXXXXX");
 	const [names, setNames] = useState<string[]>([]);
 
-	const [hostName, setHostName] = useState<string>("");
+	const [hostName, setHostName] = useState<string>(globalState.name);
 
 	useEffect(() => {
 		fetch(API_URL + "/getCode")
 			.then(res => res.json())
 			.then(json => setID(json.code));
-
-		console.log("Created", id);
 	}, []);
 
 	const listeners: Partial<ListenerMap> = useMemo(() => ({

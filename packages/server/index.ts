@@ -78,16 +78,21 @@ app.get('/start/:id', (c) => {
 	c.status(200);
 	return c.text("Started");
 });
-app.get('/done/:id/:name', async (c) => {
-	const code = c.req.param('id');
-	const game = games[code];
+app.post('/done/:id/:name', async (c) => {
+
+	const { id, name } = c.req.param();
+
+	const game = games[id];
 	if (!game) return c.text("Not found", 404);
-	const name = c.req.param('name');
+
 	const player = game.players.find(p => p.name == name);
 	if (!player) return c.text("Player not found", 404);
-	const roster = c.req.query().roster as string;
-	player.roster = JSON.parse(roster);
-	hostRoomEmitter.emit("roster-" + code);
+
+	const body = await c.req.json();
+	if (!body.roster) return c.text("No roster", 404);
+	player.roster = body.roster;
+
+	hostRoomEmitter.emit("roster-" + id);
 	return c.text("Done!");
 });
 app.get('/hostStream/:id', (c) => {
@@ -114,6 +119,11 @@ app.get('/hostStream/:id', (c) => {
 		const onStart = async () => {
 			game.started = true;
 			game.teamOrder = shuffle([...NFL_TEAMS]);
+
+			for (const p of game.players) {
+				delete p.roster;
+			}
+
 			await stream.writeSSE({ event: 'start', data: '' });
 		};
 

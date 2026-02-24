@@ -16,7 +16,7 @@ export default function Join({
 }) {
 
 	const [code, setCode] = useState<string>("");
-	const [name, setName] = useState<string>("");
+	const [name, setName] = useState<string>(globalState.name);
 
 	const [waiting, setWaiting] = useState<boolean>(false);
 

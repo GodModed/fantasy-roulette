@@ -54,13 +54,15 @@ export default function Game({
     useEffect(() => {
         if (!isFinished || !globalState.online) return;
 
-        fetch(API_URL + "/done/" + globalState.code + "/" + globalState.name + "?roster=" + JSON.stringify(roster))
-            .then(() => {
-                setGlobalState(s => ({
-                    ...s,
-                    screen: "RESULTS"
-                }))
-            });
+        fetch(API_URL + "/done/" + globalState.code + "/" + globalState.name, {
+            method: "POST",
+            body: JSON.stringify({ roster })
+        }).then(() => {
+            setGlobalState(s => ({
+                ...s,
+                screen: "RESULTS"
+            }))
+        });
 
     }, [isFinished]);
 

@@ -9,12 +9,7 @@ export function shuffle<T>(arr: T[]): T[] {
         randomIndex = Math.floor(Math.random() * currentIndex);
         currentIndex--;
 
-        const rand = newArr[randomIndex];
-        const curr = newArr[currentIndex];
-        if (rand && curr) {
-            newArr[currentIndex] = rand;
-            newArr[randomIndex] = curr;
-        }
+        [newArr[randomIndex], newArr[currentIndex]] = [newArr[currentIndex]!, newArr[randomIndex]!];
 
     }
 
