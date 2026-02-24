@@ -6,7 +6,7 @@ import Game from "./screens/Game";
 import Home from "./screens/Home";
 import Host from "./screens/Host";
 import Join from "./screens/Join";
-import { Text, View } from "react-native";
+import { StatusBar, Text, View } from "react-native";
 import { Button } from "./components/ui/button";
 import { OverlayProvider } from "@gluestack-ui/overlay";
 import Results from "./screens/Results";
@@ -26,6 +26,7 @@ export default function MainMenu() {
 				<SafeAreaProvider>
 					<View className='flex justify-center items-center h-screen bg-zinc-900 flex-1'>
 						<SafeAreaView className="flex-1">
+							<StatusBar barStyle="light-content" />
 							{globalState.screen != "HOME" && (
 								<Button
 									className='bg-zinc-800 m-2 hover:bg-zinc-900'

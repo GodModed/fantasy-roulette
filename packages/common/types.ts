@@ -99,4 +99,4 @@ export type ServerGame = {
 
 export type ServerEvent = "join" | "start" | "team" | "roster";
 
-export const API_URL = "http://localhost:3000";
+export const API_URL = "http://10.212.46.68:3000";

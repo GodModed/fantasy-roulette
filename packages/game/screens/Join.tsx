@@ -45,16 +45,16 @@ export default function Join({
 
 	return (
 		<>
-			<Box className="flex-row p-4 items-center">
-				<Input className="mx-4">
-					<InputField value={code} onChangeText={setCode} placeholder="Code"></InputField>
+			<Box className="flex-column p-4 items-center">
+				<Input className="m-4">
+					<InputField className="text-white" value={code} onChangeText={setCode} placeholder="Code"></InputField>
 				</Input>
 
-				<Input className="mx-4">
-					<InputField value={name} onChangeText={setName} placeholder="Name"></InputField>
+				<Input className="m-4">
+					<InputField className="text-white" value={name} onChangeText={setName} placeholder="Name"></InputField>
 				</Input>
 
-				<Button className="mx-4" onPress={onClick} disabled={waiting}>
+				<Button className="m-4" onPress={onClick} disabled={waiting}>
 					<Text>Join</Text>
 				</Button>
 

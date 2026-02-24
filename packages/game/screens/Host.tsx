@@ -54,17 +54,17 @@ export default function Host({
 
 	return (
 		<>
-			<Box className="flex-row p-4 items-center">
-				<Text className="mx-4 text-white bg-rose-700 p-2 rounded text-base text-center justify-center font-mono">
+			<Box className="flex-column p-4 items-center">
+				<Text className="m-4 text-white bg-rose-700 p-2 rounded text-base text-center justify-center font-mono">
 					{id}
 				</Text>
 
-				<Input className="mx-4">
-					<InputField placeholder="Name" value={hostName} onChangeText={setHostName}></InputField>
+				<Input className="m-4 text-white">
+					<InputField className="text-white" placeholder="Name" value={hostName} onChangeText={setHostName}></InputField>
 				</Input>
 
-				<Button className="mx-4" onPress={onStart}>
-					<Text>Start</Text>
+				<Button className="m-4" onPress={onStart}>
+					<Text className="text-white">Start</Text>
 				</Button>
 
 			</Box>
