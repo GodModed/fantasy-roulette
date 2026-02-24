@@ -149,4 +149,5 @@ const app = new Hono()
 		})
 	})
 
+export default app;
 export type Server = typeof app;
