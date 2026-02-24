@@ -6,7 +6,8 @@ import { Input, InputField } from "../components/ui/input";
 import { Button } from "../components/ui/button";
 import EventSource from "react-native-sse";
 import useEventStream, { ListenerMap } from "@/hooks/stream";
-
+import { type Server} from "server";
+import { hc } from "hono/client";
 
 export default function Host({
 	globalState,
@@ -16,13 +17,15 @@ export default function Host({
 	setGlobalState: Dispatch<SetStateAction<GENERAL_STATE>>
 }) {
 
+	const client = hc<Server>(API_URL);
+
 	const [id, setID] = useState<string>("XXXXXX");
 	const [names, setNames] = useState<string[]>([]);
 
 	const [hostName, setHostName] = useState<string>(globalState.name);
 
 	useEffect(() => {
-		fetch(API_URL + "/getCode")
+		client.getCode.$get()
 			.then(res => res.json())
 			.then(json => setID(json.code));
 	}, []);
@@ -35,11 +38,21 @@ export default function Host({
 	    }
 	}), []);
 
+
 	useEventStream(id, id != "XXXXXX", listeners);
 
 	async function onStart() {
-		await fetch(API_URL + "/join/" + id + "/" + hostName);
-		const res = await fetch(API_URL + "/start/" + id)
+		await client.join[":id"][':name'].$get({
+			param: {
+				id,
+				name: hostName
+			}
+		});
+		await client.start[":id"].$get({
+			param: {
+				id
+			}
+		});
 		setGlobalState(s => ({
 			...s,
 			screen: "GAME",
@@ -63,8 +76,8 @@ export default function Host({
 					<InputField className="text-white" placeholder="Name" value={hostName} onChangeText={setHostName}></InputField>
 				</Input>
 
-				<Button className="m-4" onPress={onStart}>
-					<Text className="text-white">Start</Text>
+				<Button className="m-4" onPress={onStart} disabled={id == "XXXXXX" || hostName.trim() == ""}>
+					<Text className="text-black">Start</Text>
 				</Button>
 
 			</Box>

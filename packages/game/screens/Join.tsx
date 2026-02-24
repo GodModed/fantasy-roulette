@@ -54,7 +54,7 @@ export default function Join({
 					<InputField className="text-white" value={name} onChangeText={setName} placeholder="Name"></InputField>
 				</Input>
 
-				<Button className="m-4" onPress={onClick} disabled={waiting}>
+				<Button className="m-4" onPress={onClick} disabled={waiting || name.trim() == "" || code.trim() == ""}>
 					<Text>Join</Text>
 				</Button>
 
