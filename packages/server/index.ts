@@ -5,6 +5,7 @@ import { EventEmitter } from 'node:events';
 import { type ServerPlayer, type ServerGame, NFL_TEAMS, type Roster } from "common/types";
 import { shuffle } from 'common';
 import { logger } from 'hono/logger';
+import { validator } from 'hono/validator';
 
 function getRandomCode(): string {
 	let code = "";
@@ -80,7 +81,9 @@ const app = new Hono()
 		hostRoomEmitter.emit("start-" + code);
 		c.status(200);
 		return c.text("Started");
-	}).post('/done/:id/:name', async (c) => {
+	}).post('/done/:id/:name', validator('json', (value) => {
+		return value as { roster: Roster };
+	}), async (c) => {
 
 		const { id, name } = c.req.param();
 
@@ -90,7 +93,7 @@ const app = new Hono()
 		const player = game.players.find(p => p.name == name);
 		if (!player) return c.text("Player not found", 404);
 
-		const body = await c.req.json();
+		const body = await c.req.json<{ roster: Roster }>();
 		if (!body.roster) return c.text("No roster", 404);
 		player.roster = body.roster;
 

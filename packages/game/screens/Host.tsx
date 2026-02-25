@@ -8,6 +8,7 @@ import EventSource from "react-native-sse";
 import useEventStream, { ListenerMap } from "@/hooks/stream";
 import { type Server} from "server";
 import { hc } from "hono/client";
+import { API } from "@/hooks/API";
 
 export default function Host({
 	globalState,
@@ -17,17 +18,13 @@ export default function Host({
 	setGlobalState: Dispatch<SetStateAction<GENERAL_STATE>>
 }) {
 
-	const client = hc<Server>(API_URL);
-
 	const [id, setID] = useState<string>("XXXXXX");
 	const [names, setNames] = useState<string[]>([]);
 
 	const [hostName, setHostName] = useState<string>(globalState.name);
 
 	useEffect(() => {
-		client.getCode.$get()
-			.then(res => res.json())
-			.then(json => setID(json.code));
+		API.getCode().then(id => setID(id));
 	}, []);
 
 	const listeners: Partial<ListenerMap> = useMemo(() => ({
@@ -39,20 +36,12 @@ export default function Host({
 	}), []);
 
 
-	useEventStream(id, id != "XXXXXX", listeners);
+	API.stream(id, id != "XXXXXX", listeners);
 
 	async function onStart() {
-		await client.join[":id"][':name'].$get({
-			param: {
-				id,
-				name: hostName
-			}
-		});
-		await client.start[":id"].$get({
-			param: {
-				id
-			}
-		});
+		await API.join(id, hostName);
+		await API.start(id);
+
 		setGlobalState(s => ({
 			...s,
 			screen: "GAME",

@@ -10,6 +10,7 @@ import PlayerSelector from '@/components/game/PlayerSelector';
 import useEventStream, { ListenerMap } from '@/hooks/stream';
 import RosterDisplay from '@/components/game/RosterDisplay';
 import Join from './Join';
+import { API } from '@/hooks/API';
 
 export default function Game({
     globalState,
@@ -37,7 +38,7 @@ export default function Game({
         }
     }), []);
 
-    useEventStream(globalState.code, globalState.online, listeners);
+    API.stream(globalState.code, globalState.online, listeners);
 
     const [teamIdx, setTeamIdx] = useState<number>(0);
 
@@ -54,10 +55,7 @@ export default function Game({
     useEffect(() => {
         if (!isFinished || !globalState.online) return;
 
-        fetch(API_URL + "/done/" + globalState.code + "/" + globalState.name, {
-            method: "POST",
-            body: JSON.stringify({ roster })
-        }).then(() => {
+        API.done(globalState.code, globalState.name, roster).then(() => {
             setGlobalState(s => ({
                 ...s,
                 screen: "RESULTS"

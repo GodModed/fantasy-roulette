@@ -6,6 +6,7 @@ import { Input, InputField } from "../components/ui/input";
 import { Button } from "../components/ui/button";
 import EventSource from "react-native-sse";
 import useEventStream, { ListenerMap } from "@/hooks/stream";
+import { API } from "@/hooks/API";
 
 export default function Join({
 	globalState,
@@ -32,15 +33,12 @@ export default function Join({
 	    }
 	}), [code, name]);
 
-	useEventStream(code, waiting, listeners);
+	API.stream(code, waiting, listeners);
 
-	function onClick() {
-		fetch(API_URL + "/join/" + code + "/" + name).then((res) => {
-			if (res.status == 200) setWaiting(true);
-			else {
-				setWaiting(false);
-			}
-		})
+	async function onClick() {
+		const isIn = await API.join(code, name);
+		if (isIn) setWaiting(true);
+		else setWaiting(false);
 	}
 
 	return (

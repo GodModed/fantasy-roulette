@@ -6,6 +6,7 @@ import useEventStream, { ListenerMap } from "@/hooks/stream";
 import { Box } from "@/components/ui/box";
 import RosterDisplay from "@/components/game/RosterDisplay";
 import { Divider } from "@/components/ui/divider";
+import { API } from "@/hooks/API";
 
 export default function Results({
 	globalState,
@@ -30,7 +31,7 @@ export default function Results({
 	}), []);
 
 
-	useEventStream(globalState.code, globalState.online, listeners);
+	API.stream(globalState.code, globalState.online, listeners);
 
 	const playerFPTS = useMemo(() => {
 		const map: Record<string, number> = {};
@@ -47,7 +48,7 @@ export default function Results({
 	}, [players]);
 
 	async function onAgain() {
-		const res = await fetch(API_URL + "/start/" + globalState.code);
+		await API.start(globalState.code);
 	}
 
 	
