@@ -1,5 +1,5 @@
 import { Text } from 'react-native';
-import { rosterIsComplete, shuffle } from 'common';
+import { getFantasyPoints, rosterIsComplete, shuffle } from 'common';
 import { ROSTER_POSITIONS, NFL_TEAMS, NFLPlayer, NFLTeam, NFLRosterPosition, GENERAL_STATE, Roster, API_URL } from 'common/types';
 import { Dispatch, SetStateAction, useEffect, useMemo, useState } from 'react';
 
@@ -44,10 +44,7 @@ export default function Game({
 
     const team = teams[teamIdx];
 
-    let fpts = 0;
-    for (const pos of ROSTER_POSITIONS) {
-        fpts += roster[pos]?.fpts || 0;
-    }
+    const fpts = getFantasyPoints(roster);
 
     const isFinished = useMemo(() => {
         return rosterIsComplete(roster)

@@ -20,7 +20,7 @@ export default function Results({
 	const listeners: Partial<ListenerMap> = useMemo(() => ({
 		roster: (e) => {
 			const newPlayers = JSON.parse(e.data ?? "") as ServerPlayer[];
-			setPlayers(newPlayers);
+			setPlayers(newPlayers.sort((a, b) => b.fpts - a.fpts));
 		},
 		start: (e) => {
 			setGlobalState(s => ({
@@ -68,7 +68,8 @@ export default function Results({
 					<Text className="text-center text-base text-white">{p.name}</Text>
 					{p.roster && <>
 						<RosterDisplay roster={p.roster} />
-						<Text className="text-center text-base text-white">FPTS: {playerFPTS[p.name].toFixed(2)}</Text>
+						// TODO: FIX FPTS. USE FPTS from player instead of creating a map each time.
+						<Text className="text-center text-base text-white">FPTS: {playerFPTS[p.name].toFixed(1)}</Text>
 					</>}
 							
 					<Divider />

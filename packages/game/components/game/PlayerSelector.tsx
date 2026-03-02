@@ -20,7 +20,7 @@ export default function PlayerSelector({
         <>
             <Select onOpen={() => setOpen(true)} className="m-1" >
                 <SelectTrigger className={selectedPlayer != null ? "cursor-pointer" : ""} variant="outline">
-                    <SelectInput className={selectedPlayer != null ? "placeholder:text-white" : ""} placeholder={selectedPlayer == null ? `Select a ${pos.split(" ")[0]}` : selectedPlayer?.name} />
+                    <SelectInput className={selectedPlayer != null ? "placeholder:text-white text-center" : "text-center"} placeholder={selectedPlayer == null ? `Select a ${pos.split(" ")[0]}` : selectedPlayer?.name + " - " + selectedPlayer?.fpts.toFixed(1)} />
                     {/*<SelectInput />*/}
                 </SelectTrigger>
             </Select>

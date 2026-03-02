@@ -3,7 +3,7 @@ import { cors } from 'hono/cors';
 import { streamSSE, SSEStreamingApi } from 'hono/streaming';
 import { EventEmitter } from 'node:events';
 import { type ServerPlayer, type ServerGame, NFL_TEAMS, type Roster } from "common/types";
-import { shuffle } from 'common';
+import { getFantasyPoints, shuffle } from 'common';
 import { logger } from 'hono/logger';
 import { validator } from 'hono/validator';
 
@@ -55,7 +55,7 @@ const app = new Hono()
 		const game = games[code];
 
 		const name = c.req.param('name');
-		games[code].players.push({ name });
+		games[code].players.push({ name, fpts: 0 });
 
 		console.log("Added", name, "to room", code);
 		hostRoomEmitter.emit("join-" + code, name);
@@ -96,6 +96,7 @@ const app = new Hono()
 		const body = await c.req.json<{ roster: Roster }>();
 		if (!body.roster) return c.text("No roster", 404);
 		player.roster = body.roster;
+		player.fpts = getFantasyPoints(player.roster);
 
 		hostRoomEmitter.emit("roster-" + id);
 		return c.text("Done!");
