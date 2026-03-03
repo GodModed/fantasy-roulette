@@ -31,21 +31,7 @@ export default function Results({
 	}), []);
 
 
-	API.stream(globalState.code, globalState.online, listeners);
-
-	const playerFPTS = useMemo(() => {
-		const map: Record<string, number> = {};
-		for (const p of players) {
-			let fpts = 0;
-			if (p.roster) {
-				for (const pos of ROSTER_POSITIONS) {
-					fpts += p.roster[pos]?.fpts || 0;
-				}
-			}
-			map[p.name] = fpts;
-		}
-		return map;
-	}, [players]);
+	API.stream(globalState.code, globalState.screen, globalState.online, listeners);
 
 	async function onAgain() {
 		await API.start(globalState.code);
@@ -63,18 +49,20 @@ export default function Results({
 				paddingHorizontal: 16
 			}}
 		>
-			{players.map(p => (
-				<Box key={p.name} className="p-5">
+			{players.map(p => {
+
+				if (!p.roster) return;
+
+				return <Box key={p.name} className="p-5">
 					<Text className="text-center text-base text-white">{p.name}</Text>
 					{p.roster && <>
 						<RosterDisplay roster={p.roster} />
-						// TODO: FIX FPTS. USE FPTS from player instead of creating a map each time.
-						<Text className="text-center text-base text-white">FPTS: {playerFPTS[p.name].toFixed(1)}</Text>
+						<Text className="text-center text-base text-white">FPTS: {p.fpts.toFixed(1)}</Text>
 					</>}
 							
 					<Divider />
 				</Box>
-			))}
+			})}
 		</ScrollView>
 	</View>
 }

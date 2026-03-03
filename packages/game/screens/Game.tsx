@@ -38,7 +38,7 @@ export default function Game({
         }
     }), []);
 
-    API.stream(globalState.code, globalState.online, listeners);
+    API.stream(globalState.code, globalState.screen, globalState.online, listeners);
 
     const [teamIdx, setTeamIdx] = useState<number>(0);
 
@@ -78,7 +78,7 @@ export default function Game({
                     }}
                 />
 
-                <Text className="text-center text-white text-base m-2">FPTS: {fpts.toFixed(2)}</Text>
+                <Text className="text-center text-white text-base m-2">FPTS: {fpts.toFixed(1)}</Text>
 
             </Box>
         </>

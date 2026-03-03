@@ -36,7 +36,7 @@ export default function Host({
 	}), []);
 
 
-	API.stream(id, id != "XXXXXX", listeners);
+	API.stream(id, globalState.screen, id != "XXXXXX", listeners);
 
 	async function onStart() {
 		await API.join(id, hostName);

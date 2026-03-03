@@ -1,4 +1,4 @@
-import { API_URL, Roster } from "common/types";
+import { API_URL, Roster, SCREEN } from "common/types";
 import { hc } from "hono/client"; 
 import { Server } from "server";
 import useEventStream, { ListenerMap } from "./stream";
@@ -44,6 +44,6 @@ export const API = {
 			}
 		})
 	},
-	stream: (id: string, enabled: boolean, listeners: Partial<ListenerMap>) => useEventStream(id, enabled, listeners)
+	stream: (id: string, screen: SCREEN, enabled: boolean, listeners: Partial<ListenerMap>) => useEventStream(id, screen, enabled, listeners)
 
 };

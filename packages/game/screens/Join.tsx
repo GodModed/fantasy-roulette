@@ -22,18 +22,18 @@ export default function Join({
 	const [waiting, setWaiting] = useState<boolean>(false);
 
 	const listeners: Partial<ListenerMap> = useMemo(() => ({
-	    start: (event) => {
-	        setGlobalState(s => ({
-	        	...s,
-	        	screen: "GAME",
-	        	code,
-	        	online: true,
-	        	name
-	        }));
-	    }
-	}), [code, name]);
+		start: (event) => {
+			setGlobalState(s => ({
+				...s,
+				screen: "GAME",
+				code,
+				online: true,
+				name
+			}));
+		}
+	}), [code, name, waiting]);
 
-	API.stream(code, waiting, listeners);
+	API.stream(code, globalState.screen, waiting, listeners);
 
 	async function onClick() {
 		const isIn = await API.join(code, name);

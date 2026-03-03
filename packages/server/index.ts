@@ -2,10 +2,12 @@ import { Hono } from 'hono';
 import { cors } from 'hono/cors';
 import { streamSSE, SSEStreamingApi } from 'hono/streaming';
 import { EventEmitter } from 'node:events';
-import { type ServerPlayer, type ServerGame, NFL_TEAMS, type Roster } from "common/types";
+import { type ServerPlayer, type ServerGame, NFL_TEAMS, type Roster, SCREEN } from "common/types";
 import { getFantasyPoints, shuffle } from 'common';
 import { logger } from 'hono/logger';
 import { validator } from 'hono/validator';
+
+EventEmitter.setMaxListeners(100);
 
 function getRandomCode(): string {
 	let code = "";
@@ -29,7 +31,8 @@ const hostRoomEmitter = new EventEmitter();
 const app = new Hono()
 	.use(logger())
 	.use('*', cors())
-	.get('/', (c) => c.text('Hono!')).get('/getCode', (c) => {
+	.get('/', (c) => c.text('Hono!'))
+	.get('/getCode', (c) => {
 
 		const code = getUniqueCode();
 		games[code] = {
@@ -100,8 +103,9 @@ const app = new Hono()
 
 		hostRoomEmitter.emit("roster-" + id);
 		return c.text("Done!");
-	}).get('/hostStream/:id', (c) => {
+	}).get('/hostStream/:id/:screen', (c) => {
 		const code = c.req.param('id');
+		const screen = c.req.param('screen') as SCREEN;
 		if (games[code] == null) {
 			c.status(404);
 			return c.text("Not found");
@@ -112,21 +116,30 @@ const app = new Hono()
 			game.listeners++;
 
 			if (game.started) {
-				await stream.writeSSE({ event: 'team', data: JSON.stringify(game.teamOrder) })
-				await stream.writeSSE({ event: 'roster', data: JSON.stringify(game.players) })
+				switch (screen) {
+					case "RESULTS":
+						await stream.writeSSE({ event: 'roster', data: JSON.stringify(game.players) })
+						break;
+					case "GAME":
+						await stream.writeSSE({ event: 'team', data: JSON.stringify(game.teamOrder) })
+						break;
+					case "JOIN":
+						await stream.writeSSE({ event: 'start', data: '' });
+						break;
+				}
 			}
 
 			let aborted = false;
 			const onJoin = async (name: string) => {
-				await stream.writeSSE({ event: 'join', data: name });
+				if (screen == "HOST") await stream.writeSSE({ event: 'join', data: name });
 			};
 
 			const onStart = async () => {
-				await stream.writeSSE({ event: 'start', data: '' });
+				if (screen == "RESULTS" || screen == "JOIN") await stream.writeSSE({ event: 'start', data: '' });
 			};
 
 			const onDone = async () => {
-				await stream.writeSSE({ event: 'roster', data: JSON.stringify(game.players) });
+				if (screen == "RESULTS") await stream.writeSSE({ event: 'roster', data: JSON.stringify(game.players) });
 			}
 
 			hostRoomEmitter.on("join-" + code, onJoin);
