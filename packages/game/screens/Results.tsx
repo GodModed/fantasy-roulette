@@ -30,6 +30,11 @@ export default function Results({
 		}
 	}), []);
 
+	let numFinished = 0;
+	for (const player of players) {
+		if (player.roster) numFinished++;
+	}
+
 
 	API.stream(globalState.code, globalState.screen, globalState.online, listeners);
 
@@ -41,7 +46,8 @@ export default function Results({
 	return <View className="flex-1">
 		{globalState.hosting && <Button className="m-4" onPress={onAgain}>
 			<Text>Again?</Text>
-		</Button>} 
+		</Button>}
+		<Text className="text-center text-base text-white">{numFinished}/{players.length} Finished</Text>
 		<ScrollView
 			className="flex-1"
 			contentContainerStyle={{
