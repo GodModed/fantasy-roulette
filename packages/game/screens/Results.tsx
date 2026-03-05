@@ -21,8 +21,12 @@ export default function Results({ route }: ScreenProps) {
 			setPlayers(newPlayers.sort((a, b) => b.fpts - a.fpts));
 		},
 		start: (e) => {
-			navigation.navigate("GAME", {
-				...route.params
+			navigation.reset({
+				index: 0,
+				routes: [{
+					name: "GAME",
+					params: { ...route.params }
+				}]
 			});
 		}
 	}), []);

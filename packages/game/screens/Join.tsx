@@ -21,15 +21,21 @@ export default function Join({ route }: ScreenProps) {
 
 	const listeners: Partial<ListenerMap> = useMemo(() => ({
 		start: (event) => {
-			navigation.navigate("GAME", {
-				...route.params,
-				code,
-				online: true,
-				name
+			navigation.reset({
+				index: 0,
+				routes: [{
+					name: "GAME",
+					params: {
+						...route.params,
+						code,
+						online: true,
+						name
+					}
+				}]
 			});
 		}
 	}), [code, name, waiting]);
-
+	
 	API.stream(code, screen.name as SCREEN, waiting, listeners);
 
 	async function onClick() {

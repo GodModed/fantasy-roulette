@@ -6,7 +6,7 @@ import { Input, InputField } from "../components/ui/input";
 import { Button } from "../components/ui/button";
 import EventSource from "react-native-sse";
 import useEventStream, { ListenerMap } from "@/hooks/stream";
-import { type Server} from "server";
+import { type Server } from "server";
 import { hc } from "hono/client";
 import { API } from "@/hooks/API";
 import { useNavigation, useRoute } from "@react-navigation/native";
@@ -26,11 +26,11 @@ export default function Host({ route }: ScreenProps) {
 	}, []);
 
 	const listeners: Partial<ListenerMap> = useMemo(() => ({
-	    join: (event) => {
-	        const data = event.data;
-	        if (!data) return;
-	        setNames(n => ([...n, data]));
-	    }
+		join: (event) => {
+			const data = event.data;
+			if (!data) return;
+			setNames(n => ([...n, data]));
+		}
 	}), []);
 
 
@@ -40,13 +40,19 @@ export default function Host({ route }: ScreenProps) {
 		await API.join(id, hostName);
 		await API.start(id);
 
-		navigation.navigate("GAME", {
-			...route.params,
-			online: true,
-			hosting: true,
-			code: id,
-			name: hostName
-		})
+		navigation.reset({
+			index: 0,
+			routes: [{
+				name: "GAME",
+				params: {
+					...route.params,
+					online: true,
+					hosting: true,
+					code: id,
+					name: hostName
+				}
+			}]
+		});
 	}
 
 	// make network request here to get id generated for game
