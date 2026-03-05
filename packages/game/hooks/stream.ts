@@ -3,7 +3,7 @@ import EventSource, { EventSourceListener } from "react-native-sse";
 import { API_URL, ServerEvent } from "common/types"
 import type { SCREEN } from "common/types"
 
-const url = API_URL + "/hostStream/";
+const url = API_URL + "/api/hostStream/";
 
 export type ListenerMap = {
 	[k in ServerEvent]: EventSourceListener<ServerEvent, k>

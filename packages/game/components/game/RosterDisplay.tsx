@@ -4,6 +4,7 @@ import { Actionsheet, ActionsheetBackdrop, ActionsheetContent, ActionsheetDragIn
 import { Select, SelectTrigger, SelectInput } from "../ui/select";
 import { ROSTERS } from "common/rosters";
 import PlayerSelector from "./PlayerSelector";
+import { ScrollView } from "react-native";
 
 export default function RosterDisplay({
     roster,
@@ -16,30 +17,37 @@ export default function RosterDisplay({
     team?: NFLTeam,
     nextTeam?: () => void
 }) {
-    if (!team || !nextTeam || !setRoster) {
-        return ROSTER_POSITIONS.map(pos => (
-            <PlayerSelector
-                key={pos}
-                pos={pos}
-                selectedPlayer={roster[pos]}
-            />
-        ))        
-    } else {
-        return ROSTER_POSITIONS.map(pos => (
-            <PlayerSelector
-                key={pos}
-                pos={pos}
-                team={team}
-                selectedPlayer={roster[pos]}
-                setSelectedPlayer={(p) => {
-                    setRoster({
-                        ...roster,
-                        [pos]: p
-                    });
 
-                    nextTeam();
-                }}
-            />
-        ))
-    }
+    return <ScrollView
+        className="flex-1"
+        contentContainerStyle={{
+            paddingVertical: 24,
+            paddingHorizontal: 16
+        }}
+    >
+        {ROSTER_POSITIONS.map(pos => {
+            if (!team || !nextTeam || !setRoster) {
+                return <PlayerSelector
+                    key={pos}
+                    pos={pos}
+                    selectedPlayer={roster[pos]}
+                />
+            } else {
+                return <PlayerSelector
+                    key={pos}
+                    pos={pos}
+                    team={team}
+                    selectedPlayer={roster[pos]}
+                    setSelectedPlayer={(p) => {
+                        setRoster({
+                            ...roster,
+                            [pos]: p
+                        });
+
+                        nextTeam();
+                    }}
+                />
+            }
+        })}
+    </ScrollView>
 }

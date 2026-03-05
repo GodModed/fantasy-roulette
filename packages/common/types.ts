@@ -1,3 +1,5 @@
+import type { StaticScreenProps } from '@react-navigation/native';
+
 export const NFL_TEAMS =
         ["Arizona Cardinals",
         "Atlanta Falcons",
@@ -47,8 +49,10 @@ export const ROSTER_POSITIONS = [
     "RB 2",
     "WR 1",
     "WR 2",
+    "WR 3",
     "TE",
-    "FLEX",
+    "FLEX 1",
+    "FLEX 2"
     // "PK",
     // "D/ST"
 ] as const;
@@ -77,7 +81,6 @@ export type Roster = Record<NFLRosterPosition, NFLPlayer | null>;
 export const SCREEN = [ "HOME", "JOIN", "HOST", "GAME", "RESULTS" ] as const;
 export type SCREEN = typeof SCREEN[number];
 export type GENERAL_STATE = {
-    screen: SCREEN,
     online: boolean,
     hosting: boolean,
     code: string,
@@ -100,4 +103,6 @@ export type ServerGame = {
 
 export type ServerEvent = "join" | "start" | "team" | "roster";
 
-export const API_URL = "http://localhost:3000";
+export const API_URL = "";
+
+export type ScreenProps = StaticScreenProps<GENERAL_STATE>;

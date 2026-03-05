@@ -1,6 +1,6 @@
 import { Text } from 'react-native';
 import { getFantasyPoints, rosterIsComplete, shuffle } from 'common';
-import { ROSTER_POSITIONS, NFL_TEAMS, NFLPlayer, NFLTeam, NFLRosterPosition, GENERAL_STATE, Roster, API_URL } from 'common/types';
+import { ROSTER_POSITIONS, NFL_TEAMS, NFLPlayer, NFLTeam, NFLRosterPosition, GENERAL_STATE, Roster, API_URL, ScreenProps, SCREEN } from 'common/types';
 import { Dispatch, SetStateAction, useEffect, useMemo, useState } from 'react';
 
 import '@/global.css';
@@ -11,23 +11,23 @@ import useEventStream, { ListenerMap } from '@/hooks/stream';
 import RosterDisplay from '@/components/game/RosterDisplay';
 import Join from './Join';
 import { API } from '@/hooks/API';
+import { useNavigation, useRoute } from '@react-navigation/native';
 
-export default function Game({
-    globalState,
-    setGlobalState
-}: {
-    globalState: GENERAL_STATE,
-    setGlobalState: Dispatch<SetStateAction<GENERAL_STATE>>
-}) {
+export default function Game({ route }: ScreenProps) {
+
+    const navigation = useNavigation();
+    const screen = useRoute();
 
     const [roster, setRoster] = useState<Roster>({
         "QB": null,
         "WR 1": null,
         "WR 2": null,
+        "WR 3": null,
         "RB 1": null,
         "RB 2": null,
         "TE": null,
-        "FLEX": null
+        "FLEX 1": null,
+        "FLEX 2": null
     });
 
     const [teams, setTeams] = useState<NFLTeam[]>(shuffle([...NFL_TEAMS]));
@@ -38,7 +38,7 @@ export default function Game({
         }
     }), []);
 
-    API.stream(globalState.code, globalState.screen, globalState.online, listeners);
+    API.stream(route.params.code, screen.name as SCREEN, route.params.online, listeners);
 
     const [teamIdx, setTeamIdx] = useState<number>(0);
 
@@ -50,13 +50,12 @@ export default function Game({
         return rosterIsComplete(roster)
     }, [roster]);
     useEffect(() => {
-        if (!isFinished || !globalState.online) return;
+        if (!isFinished || !route.params.online) return;
 
-        API.done(globalState.code, globalState.name, roster).then(() => {
-            setGlobalState(s => ({
-                ...s,
-                screen: "RESULTS"
-            }))
+        API.done(route.params.code, route.params.name, roster).then(() => {
+            navigation.navigate("RESULTS", {
+                ...route.params
+            })
         });
 
     }, [isFinished]);

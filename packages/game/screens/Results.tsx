@@ -1,20 +1,18 @@
 import { ScrollView, Text, View } from "react-native";
 import { Button, ButtonGroup } from "../components/ui/button";
-import { API_URL, GENERAL_STATE, ROSTER_POSITIONS, SCREEN, ServerPlayer } from "common/types";
+import { API_URL, GENERAL_STATE, ROSTER_POSITIONS, SCREEN, ScreenProps, ServerPlayer } from "common/types";
 import { Dispatch, SetStateAction, useMemo, useState } from "react";
 import useEventStream, { ListenerMap } from "@/hooks/stream";
 import { Box } from "@/components/ui/box";
 import RosterDisplay from "@/components/game/RosterDisplay";
 import { Divider } from "@/components/ui/divider";
 import { API } from "@/hooks/API";
+import { useNavigation, useRoute } from "@react-navigation/native";
 
-export default function Results({
-	globalState,
-	setGlobalState
-}: {
-	globalState: GENERAL_STATE,
-	setGlobalState: Dispatch<SetStateAction<GENERAL_STATE>>
-}) {
+export default function Results({ route }: ScreenProps) {
+
+	const navigation = useNavigation();
+	const screen = useRoute();
 
 	const [players, setPlayers] = useState<ServerPlayer[]>([]);
 	const listeners: Partial<ListenerMap> = useMemo(() => ({
@@ -23,10 +21,9 @@ export default function Results({
 			setPlayers(newPlayers.sort((a, b) => b.fpts - a.fpts));
 		},
 		start: (e) => {
-			setGlobalState(s => ({
-				...s,
-				screen: "GAME",
-			}))
+			navigation.navigate("GAME", {
+				...route.params
+			});
 		}
 	}), []);
 
@@ -36,15 +33,15 @@ export default function Results({
 	}
 
 
-	API.stream(globalState.code, globalState.screen, globalState.online, listeners);
+	API.stream(route.params.code, screen.name as SCREEN, route.params.online, listeners);
 
 	async function onAgain() {
-		await API.start(globalState.code);
+		await API.start(route.params.code);
 	}
 
 	
 	return <View className="flex-1">
-		{globalState.hosting && <Button className="m-4" onPress={onAgain}>
+		{route.params.hosting && <Button className="m-4" onPress={onAgain}>
 			<Text>Again?</Text>
 		</Button>}
 		<Text className="text-center text-base text-white">{numFinished}/{players.length} Finished</Text>

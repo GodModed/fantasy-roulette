@@ -1,5 +1,5 @@
 import { Dispatch, SetStateAction, useEffect, useMemo, useState } from "react";
-import { API_URL, GENERAL_STATE } from "common/types";
+import { API_URL, GENERAL_STATE, SCREEN, ScreenProps } from "common/types";
 import { Text } from "react-native";
 import { Box } from "../components/ui/box";
 import { Input, InputField } from "../components/ui/input";
@@ -9,19 +9,17 @@ import useEventStream, { ListenerMap } from "@/hooks/stream";
 import { type Server} from "server";
 import { hc } from "hono/client";
 import { API } from "@/hooks/API";
+import { useNavigation, useRoute } from "@react-navigation/native";
 
-export default function Host({
-	globalState,
-	setGlobalState
-}: {
-	globalState: GENERAL_STATE,
-	setGlobalState: Dispatch<SetStateAction<GENERAL_STATE>>
-}) {
+export default function Host({ route }: ScreenProps) {
+
+	const navigation = useNavigation();
+	const screen = useRoute();
 
 	const [id, setID] = useState<string>("XXXXXX");
 	const [names, setNames] = useState<string[]>([]);
 
-	const [hostName, setHostName] = useState<string>(globalState.name);
+	const [hostName, setHostName] = useState<string>(route.params.name);
 
 	useEffect(() => {
 		API.getCode().then(id => setID(id));
@@ -36,20 +34,19 @@ export default function Host({
 	}), []);
 
 
-	API.stream(id, globalState.screen, id != "XXXXXX", listeners);
+	API.stream(id, screen.name as SCREEN, id != "XXXXXX", listeners);
 
 	async function onStart() {
 		await API.join(id, hostName);
 		await API.start(id);
 
-		setGlobalState(s => ({
-			...s,
-			screen: "GAME",
+		navigation.navigate("GAME", {
+			...route.params,
 			online: true,
 			hosting: true,
 			code: id,
 			name: hostName
-		}));
+		})
 	}
 
 	// make network request here to get id generated for game

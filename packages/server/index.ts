@@ -1,5 +1,6 @@
 import { Hono } from 'hono';
 import { cors } from 'hono/cors';
+import { proxy } from 'hono/proxy';
 import { streamSSE, SSEStreamingApi } from 'hono/streaming';
 import { EventEmitter } from 'node:events';
 import { type ServerPlayer, type ServerGame, NFL_TEAMS, type Roster, SCREEN } from "common/types";
@@ -28,10 +29,8 @@ function getUniqueCode(): string {
 const games: Record<string, ServerGame> = {};
 const hostRoomEmitter = new EventEmitter();
 
-const app = new Hono()
-	.use(logger())
-	.use('*', cors())
-	.get('/', (c) => c.text('Hono!'))
+const TARGET = "http://localhost:8081";
+const api = new Hono()
 	.get('/getCode', (c) => {
 
 		const code = getUniqueCode();
@@ -166,5 +165,65 @@ const app = new Hono()
 		})
 	})
 
-export default app;
+import type { Context } from 'hono';
+import { upgradeWebSocket } from 'hono/bun';
+// import { upgradeWebSocket } from 'hono';
+
+export function proxyWs(proxyUrl: Parameters<typeof proxy>[0], proxyInit: Parameters<typeof proxy>[1], c: Context) {
+	if (c.req.header('upgrade') === 'websocket') {
+		const subProtocol = c.req.header('sec-websocket-protocol');
+		const proxyWs = new WebSocket(new Request(proxyUrl as any).url.replace(/^http/, 'ws'), subProtocol);
+
+		return upgradeWebSocket(c, {
+			onOpen(event, wsContext) {
+				proxyWs.addEventListener('message', (event) => {
+					if (wsContext.readyState === WebSocket.OPEN) {
+						wsContext.send(event.data);
+					}
+				});
+				proxyWs.addEventListener('close', () => {
+					wsContext.close();
+				});
+			},
+			onMessage(event, wsContext) {
+				if (proxyWs.readyState === WebSocket.OPEN) {
+					proxyWs.send(event.data as any);
+				}
+			},
+			onClose() {
+				proxyWs.close();
+			}
+		});
+	}
+
+	return proxy(proxyUrl, proxyInit);
+}
+
+const app = new Hono()
+	.use(logger())
+	// .use('*', cors())
+	.route('/api', api)
+	.all('*', (c) => {
+		const url = new URL(c.req.url);
+		url.host = new URL(TARGET).host;
+		url.protocol = new URL(TARGET).protocol;
+
+		return proxyWs(url.toString(), {
+			...c.req,
+			headers: {
+				...c.req.header(),
+				host: new URL(TARGET).host
+			}
+		}, c)
+	})
+
+
+import { websocket } from 'hono/bun';
+
+
+export default {
+	port: 3000,
+	fetch: app.fetch,
+	websocket
+};
 export type Server = typeof app;

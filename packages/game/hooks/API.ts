@@ -6,16 +6,16 @@ import useEventStream, { ListenerMap } from "./stream";
 const client = hc<Server>(API_URL);
 
 export const API = {
-	index: () => {},
 	getCode: async (): Promise<string> => {
-		const res = await client.getCode.$get();
+		const res = await client.api.getCode.$get();
 		if (!res.ok) return "XXXXXX"
 	
 		const json = await res.json();
+		console.log(json);
 		return json.code;
 	},
 	join: async (id: string, name: string): Promise<boolean> => {
-		const res = await client.join[":id"][":name"].$get({
+		const res = await client.api.join[":id"][":name"].$get({
 			param: {
 				id,
 				name
@@ -25,7 +25,7 @@ export const API = {
 		return res.ok;
 	},
 	start: async (id: string): Promise<boolean> => {
-		const res = await client.start[":id"].$get({
+		const res = await client.api.start[":id"].$get({
 			param: {
 				id
 			}
@@ -34,7 +34,7 @@ export const API = {
 		return res.ok;
 	},
 	done: async (id: string, name: string, roster: Roster) => {
-		const res = await client.done[":id"][":name"].$post({
+		const res = await client.api.done[":id"][":name"].$post({
 			param: {
 				id,
 				name
@@ -43,6 +43,8 @@ export const API = {
 				roster
 			}
 		})
+
+		return res.ok;
 	},
 	stream: (id: string, screen: SCREEN, enabled: boolean, listeners: Partial<ListenerMap>) => useEventStream(id, screen, enabled, listeners)
 

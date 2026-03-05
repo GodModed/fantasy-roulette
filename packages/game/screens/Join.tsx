@@ -1,5 +1,5 @@
 import { Dispatch, SetStateAction, useEffect, useMemo, useRef, useState } from "react";
-import { API_URL, GENERAL_STATE, SCREEN } from "common/types";
+import { API_URL, GENERAL_STATE, SCREEN, ScreenProps } from "common/types";
 import { Text, TextInputProps } from "react-native";
 import { Box } from "../components/ui/box";
 import { Input, InputField } from "../components/ui/input";
@@ -7,33 +7,30 @@ import { Button } from "../components/ui/button";
 import EventSource from "react-native-sse";
 import useEventStream, { ListenerMap } from "@/hooks/stream";
 import { API } from "@/hooks/API";
+import { useNavigation, useRoute } from "@react-navigation/native";
 
-export default function Join({
-	globalState,
-	setGlobalState
-}: {
-	globalState: GENERAL_STATE,
-	setGlobalState: Dispatch<SetStateAction<GENERAL_STATE>>
-}) {
+export default function Join({ route }: ScreenProps) {
+
+	const navigation = useNavigation();
+	const screen = useRoute();
 
 	const [code, setCode] = useState<string>("");
-	const [name, setName] = useState<string>(globalState.name);
+	const [name, setName] = useState<string>(route.params.name);
 
 	const [waiting, setWaiting] = useState<boolean>(false);
 
 	const listeners: Partial<ListenerMap> = useMemo(() => ({
 		start: (event) => {
-			setGlobalState(s => ({
-				...s,
-				screen: "GAME",
+			navigation.navigate("GAME", {
+				...route.params,
 				code,
 				online: true,
 				name
-			}));
+			});
 		}
 	}), [code, name, waiting]);
 
-	API.stream(code, globalState.screen, waiting, listeners);
+	API.stream(code, screen.name as SCREEN, waiting, listeners);
 
 	async function onClick() {
 		const isIn = await API.join(code, name);
