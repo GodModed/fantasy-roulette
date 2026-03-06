@@ -18,7 +18,7 @@ function genRoster(settings: ROSTER_SETTINGS): Roster {
     const roster: Record<string, null | undefined> = {};
     objectKeys(settings).map(pos => {
         for (let i = 0; i < settings?.[pos]!; i++) {
-            roster[pos + ` ${i}`] = null;
+            roster[pos + ` ${i + 1}`] = null;
         }
     });
 

@@ -4,11 +4,10 @@ import { GENERAL_STATE, SCREEN } from "common/types";
 
 
 export default function navigate(
-	navigation: any,
+	navigation: StackNavigationList,
 	screen: SCREEN,
 	state: GENERAL_STATE
 ) {
-	navigation = navigation as ReturnType<typeof useNavigation<StackNavigationList>>
 	navigation.reset({
 		index: 0,
 		routes: [{

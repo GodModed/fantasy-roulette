@@ -68,8 +68,8 @@ export default function Host({ route }: ScreenProps) {
 				</Input>
 
 				{objectKeys(rosterSettings).map(setting => (
-					<Input className="m-1 text-white">
-						<InputField className="text-white" placeholder={setting} value={rosterSettings[setting].toString()} onChangeText={n => {
+					<Input className="m-1 text-white" key={setting}>
+						<InputField className="text-white" placeholder={setting} value={rosterSettings[setting]!.toString()} onChangeText={n => {
 							const num = parseInt(n);
 							if (Number.isNaN(num)) return;
 							setRosterSettings({
