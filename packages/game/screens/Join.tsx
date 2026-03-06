@@ -1,5 +1,5 @@
-import { Dispatch, SetStateAction, useEffect, useMemo, useRef, useState } from "react";
-import { API_URL, GENERAL_STATE, SCREEN, ScreenProps } from "common/types";
+import { Dispatch, SetStateAction, useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { API_URL, GENERAL_STATE, SCREEN, ScreenProps, ServerGame } from "common/types";
 import { Text, TextInputProps } from "react-native";
 import { Box } from "../components/ui/box";
 import { Input, InputField } from "../components/ui/input";
@@ -9,6 +9,7 @@ import useEventStream, { ListenerMap } from "@/hooks/stream";
 import { API } from "@/hooks/API";
 import { useNavigation, useRoute } from "@react-navigation/native";
 import navigate from "@/hooks/navigate";
+import { StackNavigationList } from "@/App";
 
 export default function Join({ route }: ScreenProps) {
 
@@ -20,18 +21,18 @@ export default function Join({ route }: ScreenProps) {
 
 	const [waiting, setWaiting] = useState<boolean>(false);
 
-	const listeners: Partial<ListenerMap> = useMemo(() => ({
-		start: (event) => {
-			navigate(navigation, "GAME", {
-				...route.params,
-				code,
-				online: true,
-				name
-			});
-		}
-	}), [code, name, waiting]);
+	const onState = useCallback((state: ServerGame) => {
+		if (!state.started) return;
+		navigate(navigation as StackNavigationList, "GAME", {
+			...route.params,
+			code,
+			online: true,
+			name,
+			round: state.round
+		});
+	}, [code, name, waiting]);
 	
-	API.stream(code, screen.name as SCREEN, waiting, listeners);
+	API.stream(code, waiting, onState);
 
 	async function onClick() {
 		const isIn = await API.join(code, name);

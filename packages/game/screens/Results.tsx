@@ -1,7 +1,7 @@
 import { ScrollView, Text, View } from "react-native";
 import { Button, ButtonGroup } from "../components/ui/button";
-import { API_URL, GENERAL_STATE, ROSTER_POSITIONS, SCREEN, ScreenProps, ServerPlayer } from "common/types";
-import { Dispatch, SetStateAction, useMemo, useState } from "react";
+import { API_URL, GENERAL_STATE, ROSTER_POSITIONS, SCREEN, ScreenProps, ServerGame, ServerPlayer } from "common/types";
+import { Dispatch, SetStateAction, useCallback, useMemo, useState } from "react";
 import useEventStream, { ListenerMap } from "@/hooks/stream";
 import { Box } from "@/components/ui/box";
 import RosterDisplay from "@/components/game/RosterDisplay";
@@ -9,6 +9,7 @@ import { Divider } from "@/components/ui/divider";
 import { API } from "@/hooks/API";
 import { useNavigation, useRoute } from "@react-navigation/native";
 import navigate from "@/hooks/navigate";
+import { StackNavigationList } from "@/App";
 
 export default function Results({ route }: ScreenProps) {
 
@@ -22,7 +23,7 @@ export default function Results({ route }: ScreenProps) {
 			setPlayers(newPlayers.sort((a, b) => b.fpts - a.fpts));
 		},
 		start: (e) => {
-			navigate(navigation, "GAME", route.params);
+			navigate(navigation as StackNavigationList, "GAME", route.params);
 		}
 	}), []);
 
@@ -31,8 +32,18 @@ export default function Results({ route }: ScreenProps) {
 		if (player.roster) numFinished++;
 	}
 
+	const onState = useCallback((state: ServerGame) => {
+		setPlayers(state.players);
 
-	API.stream(route.params.code, screen.name as SCREEN, route.params.online, listeners);
+		if (state.round != route.params.round) {
+			navigate(navigation as StackNavigationList, "GAME", {
+				...route.params,
+				round: state.round
+			});
+		}
+	}, []);
+
+	API.stream(route.params.code, route.params.online, onState);
 
 	async function onAgain() {
 		await API.start(route.params.code);

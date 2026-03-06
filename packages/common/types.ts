@@ -95,7 +95,8 @@ export type GENERAL_STATE = {
     hosting: boolean,
     code: string,
     name: string,
-    rosterSettings: ROSTER_SETTINGS
+    rosterSettings: ROSTER_SETTINGS,
+    round: number
 };
 
 export type ServerPlayer = {
@@ -110,6 +111,7 @@ export type ServerGame = {
     listeners: number,
     started: boolean,
     teamOrder: NFLTeam[],
+    round: number
 };
 
 export type ServerEvent = "join" | "start" | "team" | "roster";

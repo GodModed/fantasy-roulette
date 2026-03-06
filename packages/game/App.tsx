@@ -24,7 +24,8 @@ const initialParams: GENERAL_STATE = {
 		WR: 2,
 		TE: 1,
 		FLEX: 1
-	}
+	},
+	round: 0
 }
 
 const RootStack = createNativeStackNavigator({
@@ -103,11 +104,15 @@ function HomeButton() {
 	if (route.name == "HOME") return;
 
 	return (
-		<Button 
-			variant="outline"
-			onPress={() => navigation.reset({ index: 0, routes: [{ name: 'HOME', params: route.params }] })} 
+		<Button
+			className="m-4"
+			onPress={() => navigation.reset({ index: 0, routes: [{ name: 'HOME', params: {
+				...route.params,
+				online: false,
+				round: 0
+			} }] })} 
 		>
-			<ButtonText className="text-white text-base">Home</ButtonText>
+			<Text>Home</Text>
 		</Button>
 	);
 }

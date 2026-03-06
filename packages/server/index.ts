@@ -39,7 +39,8 @@ const api = new Hono()
 			players: [],
 			listeners: 0,
 			started: false,
-			teamOrder: []
+			teamOrder: [],
+			round: 0
 		}
 
 		console.log("Created room", code);
@@ -57,10 +58,10 @@ const api = new Hono()
 		const game = games[code];
 
 		const name = c.req.param('name');
-		games[code].players.push({ name, fpts: 0 });
+		game.players.push({ name, fpts: 0 });
 
 		console.log("Added", name, "to room", code);
-		hostRoomEmitter.emit("join-" + code, name);
+		hostRoomEmitter.emit("state-" + code);
 
 		c.status(200);
 		return c.text("Game found");
@@ -74,13 +75,14 @@ const api = new Hono()
 
 		game.started = true;
 		game.teamOrder = shuffle([...NFL_TEAMS]);
+		game.round++;
 
 		for (const p of game.players) {
 			delete p.roster;
 		}
 
 
-		hostRoomEmitter.emit("start-" + code);
+		hostRoomEmitter.emit("state-" + code);
 		c.status(200);
 		return c.text("Started");
 	}).post('/done/:id/:name', validator('json', (value) => {
@@ -100,56 +102,30 @@ const api = new Hono()
 		player.roster = body.roster;
 		player.fpts = getFantasyPoints(player.roster);
 
-		hostRoomEmitter.emit("roster-" + id);
+		hostRoomEmitter.emit("state-" + id);
 		return c.text("Done!");
-	}).get('/hostStream/:id/:screen', (c) => {
+	}).get('/hostStream/:id', (c) => {
 		const code = c.req.param('id');
-		const screen = c.req.param('screen') as SCREEN;
 		if (games[code] == null) {
 			c.status(404);
 			return c.text("Not found");
 		}
 		const game = games[code];
 		return streamSSE(c, async (stream) => {
+			const emitState = async () => {
+				await stream.writeSSE({ event: "state", data: JSON.stringify(game) });
+			}
 
 			game.listeners++;
 
-			if (game.started) {
-				switch (screen) {
-					case "RESULTS":
-						await stream.writeSSE({ event: 'roster', data: JSON.stringify(game.players) })
-						break;
-					case "GAME":
-						await stream.writeSSE({ event: 'team', data: JSON.stringify(game.teamOrder) })
-						break;
-					case "JOIN":
-						await stream.writeSSE({ event: 'start', data: '' });
-						break;
-				}
-			}
+			emitState();
 
 			let aborted = false;
-			const onJoin = async (name: string) => {
-				if (screen == "HOST") await stream.writeSSE({ event: 'join', data: name });
-			};
 
-			const onStart = async () => {
-				if (screen == "RESULTS" || screen == "JOIN") await stream.writeSSE({ event: 'start', data: '' });
-			};
-
-			const onDone = async () => {
-				if (screen == "RESULTS") await stream.writeSSE({ event: 'roster', data: JSON.stringify(game.players) });
-			}
-
-			hostRoomEmitter.on("join-" + code, onJoin);
-			hostRoomEmitter.on("start-" + code, onStart);
-			hostRoomEmitter.on("roster-" + code, onDone);
+			hostRoomEmitter.on("state-" + code, emitState);
 			stream.onAbort(() => {
 				aborted = true;
-				console.log("Host stream ended");
-				hostRoomEmitter.off("join-" + code, onJoin);
-				hostRoomEmitter.off("start-" + code, onStart);
-				hostRoomEmitter.off("roster-" + code, onDone);
+				hostRoomEmitter.off("state-" + code, emitState);
 				game.listeners--;
 				if (game.listeners == 0 && !game.started) {
 					delete games[code];

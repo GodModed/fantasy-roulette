@@ -1,5 +1,5 @@
-import { Dispatch, SetStateAction, useEffect, useMemo, useState } from "react";
-import { API_URL, GENERAL_STATE, ROSTER_SETTINGS, SCREEN, ScreenProps } from "common/types";
+import { Dispatch, SetStateAction, useCallback, useEffect, useMemo, useState } from "react";
+import { API_URL, GENERAL_STATE, ROSTER_SETTINGS, SCREEN, ScreenProps, ServerGame, ServerPlayer } from "common/types";
 import { Text } from "react-native";
 import { Box } from "../components/ui/box";
 import { Input, InputField } from "../components/ui/input";
@@ -12,6 +12,7 @@ import { API } from "@/hooks/API";
 import { useNavigation, useRoute } from "@react-navigation/native";
 import navigate from "@/hooks/navigate";
 import { objectKeys } from "common";
+import { StackNavigationList } from "@/App";
 
 export default function Host({ route }: ScreenProps) {
 
@@ -19,7 +20,7 @@ export default function Host({ route }: ScreenProps) {
 	const screen = useRoute();
 
 	const [id, setID] = useState<string>("XXXXXX");
-	const [names, setNames] = useState<string[]>([]);
+	const [players, setPlayers] = useState<ServerPlayer[]>([]);
 
 	const [hostName, setHostName] = useState<string>(route.params.name);
 
@@ -29,28 +30,25 @@ export default function Host({ route }: ScreenProps) {
 		API.getCode().then(id => setID(id));
 	}, []);
 
-	const listeners: Partial<ListenerMap> = useMemo(() => ({
-		join: (event) => {
-			const data = event.data;
-			if (!data) return;
-			setNames(n => ([...n, data]));
-		}
-	}), []);
+	const onState = useCallback((state: ServerGame) => {
+		setPlayers(state.players);
+	}, []);
 
 
-	API.stream(id, screen.name as SCREEN, id != "XXXXXX", listeners);
+	API.stream(id, id != "XXXXXX", onState);
 
 	async function onStart() {
 		await API.join(id, hostName);
 		await API.start(id);
 
-		navigate(navigation, "GAME", {
+		navigate(navigation as StackNavigationList, "GAME", {
 			...route.params,
 			online: true,
 			hosting: true,
 			code: id,
 			name: hostName,
-			rosterSettings
+			rosterSettings,
+			round: 1
 		});
 	}
 
@@ -86,8 +84,8 @@ export default function Host({ route }: ScreenProps) {
 
 			</Box>
 
-			{names.map(name => (
-				<Text className="text-white text-base text-center" key={name}>{name}</Text>
+			{players.map(player => (
+				<Text className="text-white text-base text-center" key={player.name}>{player.name}</Text>
 			))}
 
 		</>

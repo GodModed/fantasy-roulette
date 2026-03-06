@@ -1,7 +1,7 @@
 import { Text } from 'react-native';
 import { getFantasyPoints, objectKeys, rosterIsComplete, shuffle } from 'common';
-import { NFL_TEAMS, NFLPlayer, NFLTeam, NFLRosterPosition, GENERAL_STATE, Roster, API_URL, ScreenProps, SCREEN, ROSTER_SETTINGS } from 'common/types';
-import { Dispatch, SetStateAction, useEffect, useMemo, useState } from 'react';
+import { NFL_TEAMS, NFLPlayer, NFLTeam, NFLRosterPosition, GENERAL_STATE, Roster, API_URL, ScreenProps, SCREEN, ROSTER_SETTINGS, ServerGame } from 'common/types';
+import { Dispatch, SetStateAction, useCallback, useEffect, useMemo, useState } from 'react';
 
 import '@/global.css';
 import { Box } from '../components/ui/box';
@@ -13,6 +13,7 @@ import Join from './Join';
 import { API } from '@/hooks/API';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import navigate from '@/hooks/navigate';
+import { StackNavigationList } from '@/App';
 
 function genRoster(settings: ROSTER_SETTINGS): Roster {
     const roster: Record<string, null | undefined> = {};
@@ -34,6 +35,7 @@ export default function Game({ route }: ScreenProps) {
     const [roster, setRoster] = useState<Roster>(genRoster(route.params.rosterSettings));
 
     const [teams, setTeams] = useState<NFLTeam[]>(shuffle([...NFL_TEAMS]));
+    const [gotTeams, setGotTeams] = useState<boolean>(false);
 
     const listeners: Partial<ListenerMap> = useMemo(() => ({
         team: (e) => {
@@ -41,7 +43,14 @@ export default function Game({ route }: ScreenProps) {
         }
     }), []);
 
-    API.stream(route.params.code, screen.name as SCREEN, route.params.online, listeners);
+    const onState = useCallback((state: ServerGame) => {
+        if (!gotTeams) {
+            setGotTeams(true);
+            setTeams(state.teamOrder);
+        };
+    }, [gotTeams]);
+
+    API.stream(route.params.code, route.params.online, onState);
 
     const [teamIdx, setTeamIdx] = useState<number>(0);
 
@@ -56,7 +65,7 @@ export default function Game({ route }: ScreenProps) {
         if (!isFinished || !route.params.online) return;
 
         API.done(route.params.code, route.params.name, roster).then(() => {
-            navigate(navigation, "RESULTS", route.params);
+            navigate(navigation as StackNavigationList, "RESULTS", route.params);
         });
 
     }, [isFinished]);
