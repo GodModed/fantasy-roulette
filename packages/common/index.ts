@@ -16,7 +16,7 @@ export function shuffle<T>(arr: T[]): T[] {
     return newArr;
 };
 
-function objectKeys<TObj extends Record<any, any>>(obj: TObj): Array<keyof TObj> {
+export function objectKeys<TObj extends Record<any, any>>(obj: TObj): Array<keyof TObj> {
     return Object.keys(obj) as Array<keyof TObj>;
 }
 

@@ -43,23 +43,24 @@ export const NFL_POSITIONS = [
     "D/ST"
 ] as const;
 
-export const ROSTER_POSITIONS = [
-    "QB",
-    "RB 1",
-    "RB 2",
-    "WR 1",
-    "WR 2",
-    "WR 3",
-    "TE",
-    "FLEX 1",
-    "FLEX 2"
-    // "PK",
-    // "D/ST"
-] as const;
+// export const ROSTER_POSITIONS = [
+//     "QB",
+//     "RB 1",
+//     "RB 2",
+//     "WR 1",
+//     "WR 2",
+//     "WR 3",
+//     "TE",
+//     "FLEX 1",
+//     "FLEX 2"
+//     // "PK",
+//     // "D/ST"
+// ] as const;
 
 export type NFLTeam = typeof NFL_TEAMS[number];
 export type NFLPosition = typeof NFL_POSITIONS[number];
-export type NFLRosterPosition = typeof ROSTER_POSITIONS[number];
+// export type NFLRosterPosition = typeof ROSTER_POSITIONS[number];
+export type NFLRosterPosition = `${NFLPosition | "FLEX"} ${number}`
 
 export type NFLPlayer = {
     name: string;
@@ -76,15 +77,25 @@ export type AllNFLRosters = {
     [T in NFLTeam]?: NFLTeamRoster;
 };
 
+// export type Roster = {
+//     [key: `${NFLRosterPosition} ${number}`]: NFLPlayer | null
+// };
+
 export type Roster = Record<NFLRosterPosition, NFLPlayer | null>;
 
 export const SCREEN = [ "HOME", "JOIN", "HOST", "GAME", "RESULTS" ] as const;
 export type SCREEN = typeof SCREEN[number];
+
+export type ROSTER_SETTINGS = {
+    [P in NFLPosition | "FLEX"]?: number
+};
+
 export type GENERAL_STATE = {
     online: boolean,
     hosting: boolean,
     code: string,
-    name: string
+    name: string,
+    rosterSettings: ROSTER_SETTINGS
 };
 
 export type ServerPlayer = {

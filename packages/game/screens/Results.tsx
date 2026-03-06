@@ -8,6 +8,7 @@ import RosterDisplay from "@/components/game/RosterDisplay";
 import { Divider } from "@/components/ui/divider";
 import { API } from "@/hooks/API";
 import { useNavigation, useRoute } from "@react-navigation/native";
+import navigate from "@/hooks/navigate";
 
 export default function Results({ route }: ScreenProps) {
 
@@ -21,13 +22,7 @@ export default function Results({ route }: ScreenProps) {
 			setPlayers(newPlayers.sort((a, b) => b.fpts - a.fpts));
 		},
 		start: (e) => {
-			navigation.reset({
-				index: 0,
-				routes: [{
-					name: "GAME",
-					params: { ...route.params }
-				}]
-			});
+			navigate(navigation, "GAME", route.params);
 		}
 	}), []);
 

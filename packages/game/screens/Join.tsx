@@ -8,6 +8,7 @@ import EventSource from "react-native-sse";
 import useEventStream, { ListenerMap } from "@/hooks/stream";
 import { API } from "@/hooks/API";
 import { useNavigation, useRoute } from "@react-navigation/native";
+import navigate from "@/hooks/navigate";
 
 export default function Join({ route }: ScreenProps) {
 
@@ -21,17 +22,11 @@ export default function Join({ route }: ScreenProps) {
 
 	const listeners: Partial<ListenerMap> = useMemo(() => ({
 		start: (event) => {
-			navigation.reset({
-				index: 0,
-				routes: [{
-					name: "GAME",
-					params: {
-						...route.params,
-						code,
-						online: true,
-						name
-					}
-				}]
+			navigate(navigation, "GAME", {
+				...route.params,
+				code,
+				online: true,
+				name
 			});
 		}
 	}), [code, name, waiting]);

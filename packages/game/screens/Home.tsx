@@ -4,6 +4,7 @@ import { Button, ButtonGroup } from "../components/ui/button";
 import { GENERAL_STATE, SCREEN, ScreenProps } from "common/types";
 import { Dispatch, SetStateAction } from "react";
 import { useNavigation } from "@react-navigation/native";
+import navigate from "@/hooks/navigate";
 
 export default function Home({ route }: ScreenProps) {
 	return (
@@ -35,7 +36,11 @@ function ScreenButton({
 	return <Button
 				className="bg-zinc-800 hover:bg-zinc-900"
 				onPress={() => {
-					navigation.navigate(screen, state);
+					navigate(navigation, screen, {
+						...state,
+						online: false,
+						code: ""
+					});
 				}}
 			>
 				<Text className="text-white text-base">{displayName}</Text>

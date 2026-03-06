@@ -1,5 +1,5 @@
 import { Dispatch, SetStateAction, useEffect, useMemo, useState } from "react";
-import { API_URL, GENERAL_STATE, SCREEN, ScreenProps } from "common/types";
+import { API_URL, GENERAL_STATE, ROSTER_SETTINGS, SCREEN, ScreenProps } from "common/types";
 import { Text } from "react-native";
 import { Box } from "../components/ui/box";
 import { Input, InputField } from "../components/ui/input";
@@ -10,6 +10,8 @@ import { type Server } from "server";
 import { hc } from "hono/client";
 import { API } from "@/hooks/API";
 import { useNavigation, useRoute } from "@react-navigation/native";
+import navigate from "@/hooks/navigate";
+import { objectKeys } from "common";
 
 export default function Host({ route }: ScreenProps) {
 
@@ -20,6 +22,8 @@ export default function Host({ route }: ScreenProps) {
 	const [names, setNames] = useState<string[]>([]);
 
 	const [hostName, setHostName] = useState<string>(route.params.name);
+
+	const [rosterSettings, setRosterSettings] = useState<ROSTER_SETTINGS>(route.params.rosterSettings);
 
 	useEffect(() => {
 		API.getCode().then(id => setID(id));
@@ -40,18 +44,13 @@ export default function Host({ route }: ScreenProps) {
 		await API.join(id, hostName);
 		await API.start(id);
 
-		navigation.reset({
-			index: 0,
-			routes: [{
-				name: "GAME",
-				params: {
-					...route.params,
-					online: true,
-					hosting: true,
-					code: id,
-					name: hostName
-				}
-			}]
+		navigate(navigation, "GAME", {
+			...route.params,
+			online: true,
+			hosting: true,
+			code: id,
+			name: hostName,
+			rosterSettings
 		});
 	}
 
@@ -67,6 +66,19 @@ export default function Host({ route }: ScreenProps) {
 				<Input className="m-4 text-white">
 					<InputField className="text-white" placeholder="Name" value={hostName} onChangeText={setHostName}></InputField>
 				</Input>
+
+				{objectKeys(rosterSettings).map(setting => (
+					<Input className="m-1 text-white">
+						<InputField className="text-white" placeholder={setting} value={rosterSettings[setting].toString()} onChangeText={n => {
+							const num = parseInt(n);
+							if (Number.isNaN(num)) return;
+							setRosterSettings({
+								...rosterSettings,
+								[setting]: num
+							})
+						}} />
+					</Input>
+				))}
 
 				<Button className="m-4" onPress={onStart} disabled={id == "XXXXXX" || hostName.trim() == ""}>
 					<Text className="text-black">Start</Text>

@@ -227,3 +227,5 @@ export default {
 	websocket
 };
 export type Server = typeof app;
+
+// TODO: add support for bigger rosters.

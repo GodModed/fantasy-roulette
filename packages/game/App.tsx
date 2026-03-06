@@ -11,13 +11,20 @@ import { Button, ButtonText } from "./components/ui/button";
 import { OverlayProvider } from "@gluestack-ui/overlay";
 import Results from "./screens/Results";
 import { createStaticNavigation, StaticParamList, useNavigation, useRoute } from "@react-navigation/native";
-import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import { createNativeStackNavigator, NativeStackNavigationProp } from '@react-navigation/native-stack';
 
 const initialParams: GENERAL_STATE = {
 	online: false,
 	hosting: false,
 	code: "",
-	name: ""
+	name: "",
+	rosterSettings: {
+		QB: 1,
+		RB: 2,
+		WR: 2,
+		TE: 1,
+		FLEX: 1
+	}
 }
 
 const RootStack = createNativeStackNavigator({
@@ -27,13 +34,13 @@ const RootStack = createNativeStackNavigator({
 		headerTitleAlign: "center",
 		headerTintColor: "#ffffff",
 		headerShadowVisible: false,
+		headerLeft: HomeButton,
 		headerStyle: {
 			backgroundColor: "#18181b"
 		},
 		contentStyle: {
 			backgroundColor: "#18181b"
 		},
-		headerLeft: HomeButton
 	},
 	initialRouteName: "HOME",
 	screens: {
@@ -66,6 +73,7 @@ const RootStack = createNativeStackNavigator({
 });
 
 type RootStackParamList = StaticParamList<typeof RootStack>;
+export type StackNavigationList = NativeStackNavigationProp<RootStackParamList>;
 
 declare global {
 	namespace ReactNavigation {
@@ -97,7 +105,7 @@ function HomeButton() {
 	return (
 		<Button 
 			variant="outline"
-			onPress={() => navigation.reset({ index: 0, routes: [{ name: 'HOME' }] })} 
+			onPress={() => navigation.reset({ index: 0, routes: [{ name: 'HOME', params: route.params }] })} 
 		>
 			<ButtonText className="text-white text-base">Home</ButtonText>
 		</Button>

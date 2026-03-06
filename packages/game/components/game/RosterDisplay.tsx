@@ -1,10 +1,11 @@
-import { NFLPlayer, NFLPosition, NFLRosterPosition, NFLTeam, Roster, ROSTER_POSITIONS } from "common/types";
+import { NFLPlayer, NFLPosition, NFLRosterPosition, NFLTeam, Roster } from "common/types";
 import { useState } from "react";
 import { Actionsheet, ActionsheetBackdrop, ActionsheetContent, ActionsheetDragIndicatorWrapper, ActionsheetDragIndicator, ActionsheetItem, ActionsheetItemText, ActionsheetScrollView } from "../ui/actionsheet";
 import { Select, SelectTrigger, SelectInput } from "../ui/select";
 import { ROSTERS } from "common/rosters";
 import PlayerSelector from "./PlayerSelector";
 import { ScrollView } from "react-native";
+import { objectKeys } from "common";
 
 export default function RosterDisplay({
     roster,
@@ -25,7 +26,7 @@ export default function RosterDisplay({
             paddingHorizontal: 16
         }}
     >
-        {ROSTER_POSITIONS.map(pos => {
+        {objectKeys(roster).map(pos => {
             if (!team || !nextTeam || !setRoster) {
                 return <PlayerSelector
                     key={pos}
