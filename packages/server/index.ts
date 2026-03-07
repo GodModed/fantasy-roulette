@@ -3,7 +3,7 @@ import { cors } from 'hono/cors';
 import { proxy } from 'hono/proxy';
 import { streamSSE, SSEStreamingApi } from 'hono/streaming';
 import { EventEmitter } from 'node:events';
-import { type ServerPlayer, type ServerGame, NFL_TEAMS, type Roster, SCREEN } from "common/types";
+import { type ServerPlayer, type ServerGame, NFL_TEAMS, type Roster, SCREEN, type ROSTER_SETTINGS } from "common/types";
 import { getFantasyPoints, shuffle } from 'common';
 import { logger } from 'hono/logger';
 import { validator } from 'hono/validator';
@@ -40,10 +40,16 @@ const api = new Hono()
 			listeners: 0,
 			started: false,
 			teamOrder: [],
-			round: 0
+			round: 0,
+			settings: {
+				QB: 1,
+				RB: 2,
+				WR: 2,
+				TE: 1,
+				FLEX: 1
+			}
 		}
 
-		console.log("Created room", code);
 
 		return c.json({
 			code
@@ -60,7 +66,6 @@ const api = new Hono()
 		const name = c.req.param('name');
 		game.players.push({ name, fpts: 0 });
 
-		console.log("Added", name, "to room", code);
 		hostRoomEmitter.emit("state-" + code);
 
 		c.status(200);
@@ -85,6 +90,23 @@ const api = new Hono()
 		hostRoomEmitter.emit("state-" + code);
 		c.status(200);
 		return c.text("Started");
+	}).post('/settings/:id', validator('json', (value) => {
+		return value as { settings: ROSTER_SETTINGS }
+	}), async (c) => {
+
+		const id = c.req.param('id');
+		const game = games[id];
+		if (!game) return c.text("Not found", 404);
+
+		const body = await c.req.json<{ settings: ROSTER_SETTINGS }>();
+		if (!body.settings) return c.text("No settings", 404);
+
+		game.settings = body.settings;
+
+		hostRoomEmitter.emit("state-" + id);
+		return c.text("Done!");
+
+
 	}).post('/done/:id/:name', validator('json', (value) => {
 		return value as { roster: Roster };
 	}), async (c) => {
@@ -129,7 +151,6 @@ const api = new Hono()
 				game.listeners--;
 				if (game.listeners == 0 && !game.started) {
 					delete games[code];
-					console.log("Removed inactive room");
 				}
 
 			});

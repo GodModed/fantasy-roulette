@@ -28,7 +28,8 @@ export default function Join({ route }: ScreenProps) {
 			code,
 			online: true,
 			name,
-			round: state.round
+			round: state.round,
+			rosterSettings: state.settings
 		});
 	}, [code, name, waiting]);
 	

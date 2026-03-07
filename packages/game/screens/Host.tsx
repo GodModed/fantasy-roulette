@@ -38,6 +38,7 @@ export default function Host({ route }: ScreenProps) {
 	API.stream(id, id != "XXXXXX", onState);
 
 	async function onStart() {
+		await API.settings(id, rosterSettings);
 		await API.join(id, hostName);
 		await API.start(id);
 

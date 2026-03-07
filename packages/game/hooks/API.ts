@@ -1,4 +1,4 @@
-import { API_URL, Roster, SCREEN, ServerGame } from "common/types";
+import { API_URL, Roster, ROSTER_SETTINGS, SCREEN, ServerGame } from "common/types";
 import { hc } from "hono/client"; 
 import { Server } from "server";
 import useEventStream, { ListenerMap } from "./stream";
@@ -42,7 +42,19 @@ export const API = {
 			json: {
 				roster
 			}
-		})
+		});
+
+		return res.ok;
+	},
+	settings: async (id: string, settings: ROSTER_SETTINGS) => {
+		const res = await client.api.settings[":id"].$post({
+			param: {
+				id
+			},
+			json: {
+				settings
+			}
+		});
 
 		return res.ok;
 	},

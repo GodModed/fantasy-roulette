@@ -111,7 +111,8 @@ export type ServerGame = {
     listeners: number,
     started: boolean,
     teamOrder: NFLTeam[],
-    round: number
+    round: number,
+    settings: ROSTER_SETTINGS
 };
 
 export type ServerEvent = "join" | "start" | "team" | "roster";
