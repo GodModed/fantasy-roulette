@@ -1,32 +1,18 @@
-import { createElement, Dispatch, FC, ReactNode, SetStateAction, useState } from "react";
-import { GENERAL_STATE } from "common/types";
 import { GluestackUIProvider } from "./components/ui/gluestack-ui-provider";
-import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
+import { SafeAreaProvider } from "react-native-safe-area-context";
 import Game from "./screens/Game";
 import Home from "./screens/Home";
 import Host from "./screens/Host";
 import Join from "./screens/Join";
-import { StatusBar, Text, View } from "react-native";
-import { Button, ButtonText } from "./components/ui/button";
+import { StatusBar, Text } from "react-native";
+import { Button } from "./components/ui/button";
 import { OverlayProvider } from "@gluestack-ui/overlay";
 import Results from "./screens/Results";
-import { createStaticNavigation, StaticParamList, useNavigation, useRoute } from "@react-navigation/native";
+import { createStaticNavigation, StaticParamList, useRoute } from "@react-navigation/native";
 import { createNativeStackNavigator, NativeStackNavigationProp } from '@react-navigation/native-stack';
-
-const initialParams: GENERAL_STATE = {
-	online: false,
-	hosting: false,
-	code: "",
-	name: "",
-	rosterSettings: {
-		QB: 1,
-		RB: 2,
-		WR: 2,
-		TE: 1,
-		FLEX: 1
-	},
-	round: 0
-}
+import { useNavigate } from "./hooks/Navigate";
+import ServerConnection from "./hooks/ServerConnection";
+import useGameState from "./hooks/GameStore";
 
 const RootStack = createNativeStackNavigator({
 	screenOptions: {
@@ -47,27 +33,22 @@ const RootStack = createNativeStackNavigator({
 	screens: {
 		HOME: {
 			screen: Home,
-			initialParams,
 			name: "HOME"
 		},
 		GAME: {
 			screen: Game,
-			initialParams,
 			name: "GAME"
 		},
 		HOST: {
 			screen: Host,
-			initialParams,
 			name: "HOST"
 		},
 		JOIN: {
 			screen: Join,
-			initialParams,
 			name: "JOIN"
 		},
 		RESULTS: {
 			screen: Results,
-			initialParams,
 			name: "RESULTS"
 		}
 	}
@@ -90,6 +71,7 @@ export default function App() {
 			<OverlayProvider>
 				<SafeAreaProvider>
 					<StatusBar barStyle="light-content" />
+					<ServerConnection />
 					<Navigation />
 				</SafeAreaProvider>
 			</OverlayProvider>
@@ -98,19 +80,29 @@ export default function App() {
 }
 
 function HomeButton() {
-	const navigation = useNavigation();
-	const route = useRoute();
-	
+
+	const { setClientOptions, setGame } = useGameState();
+	const navigate = useNavigate();
+
+	const route = useRoute();	
 	if (route.name == "HOME") return;
+
 
 	return (
 		<Button
 			className="m-4"
-			onPress={() => navigation.reset({ index: 0, routes: [{ name: 'HOME', params: {
-				...route.params,
-				online: false,
-				round: 0
-			} }] })} 
+			onPress={() => {
+				setClientOptions({
+					code: "XXXXXX",
+					online: false,
+					host: false
+				});
+				setGame({
+					round: 0,
+					started: false
+				})
+				navigate("HOME");
+			}} 
 		>
 			<Text>Home</Text>
 		</Button>

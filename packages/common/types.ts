@@ -99,6 +99,13 @@ export type GENERAL_STATE = {
     round: number
 };
 
+export type ClientOptions = {
+    online: boolean,
+    host: boolean,
+    code: string,
+    name: string
+};
+
 export type ServerPlayer = {
     name: string,
     roster?: Roster,

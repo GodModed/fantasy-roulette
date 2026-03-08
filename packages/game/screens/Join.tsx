@@ -1,43 +1,44 @@
-import { Dispatch, SetStateAction, useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { API_URL, GENERAL_STATE, SCREEN, ScreenProps, ServerGame } from "common/types";
-import { Text, TextInputProps } from "react-native";
+import { useEffect, useState } from "react";
+import { Text } from "react-native";
 import { Box } from "../components/ui/box";
 import { Input, InputField } from "../components/ui/input";
 import { Button } from "../components/ui/button";
-import EventSource from "react-native-sse";
-import useEventStream, { ListenerMap } from "@/hooks/stream";
 import { API } from "@/hooks/API";
-import { useNavigation, useRoute } from "@react-navigation/native";
-import navigate from "@/hooks/navigate";
-import { StackNavigationList } from "@/App";
+import { useNavigate } from "@/hooks/Navigate";
+import useGameState from "@/hooks/GameStore";
 
-export default function Join({ route }: ScreenProps) {
+export default function Join() {
 
-	const navigation = useNavigation();
-	const screen = useRoute();
+	const navigate = useNavigate();
+	const { game, client, setClientOptions } = useGameState();
 
 	const [code, setCode] = useState<string>("");
-	const [name, setName] = useState<string>(route.params.name);
-
+	const [name, setName] = useState<string>(client.name);
 	const [waiting, setWaiting] = useState<boolean>(false);
 
-	const onState = useCallback((state: ServerGame) => {
-		if (!state.started) return;
-		navigate(navigation as StackNavigationList, "GAME", {
-			...route.params,
-			code,
+	useEffect(() => {
+		setClientOptions({
 			online: true,
-			name,
-			round: state.round,
-			rosterSettings: state.settings
-		});
-	}, [code, name, waiting]);
-	
-	API.stream(code, waiting, onState);
+			host: false
+		})
+	}, [])
+
+	useEffect(() => {
+		if (game.started && waiting) {
+			navigate("GAME");
+		}
+	}, [game.started, waiting])
 
 	async function onClick() {
 		const isIn = await API.join(code, name);
-		if (isIn) setWaiting(true);
+
+		if (isIn) {
+			setWaiting(true);
+			setClientOptions({
+				code,
+				name
+			});
+		}
 		else setWaiting(false);
 	}
 
@@ -59,7 +60,7 @@ export default function Join({ route }: ScreenProps) {
 			</Box>
 
 			{waiting && (
-				<Text className="text-base text-white text-xl">Waiting for host to start the game...</Text>
+				<Text className="text-base text-center text-white text-xl">Waiting for host to start the game...</Text>
 			)}
 
 		</>

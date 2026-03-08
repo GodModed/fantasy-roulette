@@ -1,7 +1,6 @@
-import { API_URL, Roster, ROSTER_SETTINGS, SCREEN, ServerGame } from "common/types";
+import { API_URL, Roster, ROSTER_SETTINGS } from "common/types";
 import { hc } from "hono/client"; 
 import { Server } from "server";
-import useEventStream, { ListenerMap } from "./stream";
 
 const client = hc<Server>(API_URL);
 
@@ -11,7 +10,6 @@ export const API = {
 		if (!res.ok) return "XXXXXX"
 	
 		const json = await res.json();
-		console.log(json);
 		return json.code;
 	},
 	join: async (id: string, name: string): Promise<boolean> => {
@@ -57,7 +55,5 @@ export const API = {
 		});
 
 		return res.ok;
-	},
-	stream: (id: string, enabled: boolean, onState: (state: ServerGame) => void) => useEventStream(id, enabled, onState)
-
+	}
 };

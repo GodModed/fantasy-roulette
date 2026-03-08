@@ -1,19 +1,15 @@
 import { Text } from 'react-native';
 import { getFantasyPoints, objectKeys, rosterIsComplete, shuffle } from 'common';
-import { NFL_TEAMS, NFLPlayer, NFLTeam, NFLRosterPosition, GENERAL_STATE, Roster, API_URL, ScreenProps, SCREEN, ROSTER_SETTINGS, ServerGame } from 'common/types';
-import { Dispatch, SetStateAction, useCallback, useEffect, useMemo, useState } from 'react';
+import { NFL_TEAMS, NFLTeam, Roster, ROSTER_SETTINGS } from 'common/types';
+import { useEffect, useMemo, useState } from 'react';
 
 import '@/global.css';
 import { Box } from '../components/ui/box';
 
-import PlayerSelector from '@/components/game/PlayerSelector';
-import useEventStream, { ListenerMap } from '@/hooks/stream';
 import RosterDisplay from '@/components/game/RosterDisplay';
-import Join from './Join';
 import { API } from '@/hooks/API';
-import { useNavigation, useRoute } from '@react-navigation/native';
-import navigate from '@/hooks/navigate';
-import { StackNavigationList } from '@/App';
+import { useNavigate } from '@/hooks/Navigate';
+import useGameState from '@/hooks/GameStore';
 
 function genRoster(settings: ROSTER_SETTINGS): Roster {
     const roster: Record<string, null | undefined> = {};
@@ -27,49 +23,40 @@ function genRoster(settings: ROSTER_SETTINGS): Roster {
 
 }
 
-export default function Game({ route }: ScreenProps) {
+export default function Game() {
 
-    const navigation = useNavigation();
-    const screen = useRoute();
+    const navigate = useNavigate();
+    const { game, client } = useGameState();
 
-    const [roster, setRoster] = useState<Roster>(genRoster(route.params.rosterSettings));
-
+    const [roster, setRoster] = useState<Roster>(genRoster(game.settings));
     const [teams, setTeams] = useState<NFLTeam[]>(shuffle([...NFL_TEAMS]));
-    const [gotTeams, setGotTeams] = useState<boolean>(false);
 
-    const listeners: Partial<ListenerMap> = useMemo(() => ({
-        team: (e) => {
-            setTeams(JSON.parse(e.data ?? "[]"));
+    useEffect(() => {
+        if (!client.online) return;
+        if (game.teamOrder.length != 0) {
+            console.log("GOT TEAMS", game.teamOrder);
+            console.log("GOT ROSTER SETTINGS", game.settings);
+            setTeams(game.teamOrder);
+            setRoster(genRoster(game.settings));
         }
-    }), []);
-
-    const onState = useCallback((state: ServerGame) => {
-        if (!gotTeams) {
-            setGotTeams(true);
-            setTeams(state.teamOrder);
-        };
-    }, [gotTeams]);
-
-    API.stream(route.params.code, route.params.online, onState);
+    }, [game.teamOrder, game.settings]);
 
     const [teamIdx, setTeamIdx] = useState<number>(0);
-
     const team = teams[teamIdx];
 
     const fpts = getFantasyPoints(roster);
-
     const isFinished = useMemo(() => {
         return rosterIsComplete(roster)
     }, [roster]);
-    useEffect(() => {
-        if (!isFinished || !route.params.online) return;
 
-        API.done(route.params.code, route.params.name, roster).then(() => {
-            navigate(navigation as StackNavigationList, "RESULTS", route.params);
+    useEffect(() => {
+        if (!isFinished || !client.online) return;
+
+        API.done(client.code, client.name, roster).then(() => {
+            navigate("RESULTS");
         });
 
     }, [isFinished]);
-
 
     return (
         <>

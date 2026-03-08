@@ -1,56 +1,43 @@
-import { Dispatch, SetStateAction, useCallback, useEffect, useMemo, useState } from "react";
-import { API_URL, GENERAL_STATE, ROSTER_SETTINGS, SCREEN, ScreenProps, ServerGame, ServerPlayer } from "common/types";
+import { useEffect, useState } from "react";
+import { ROSTER_SETTINGS } from "common/types";
 import { Text } from "react-native";
 import { Box } from "../components/ui/box";
 import { Input, InputField } from "../components/ui/input";
 import { Button } from "../components/ui/button";
-import EventSource from "react-native-sse";
-import useEventStream, { ListenerMap } from "@/hooks/stream";
-import { type Server } from "server";
-import { hc } from "hono/client";
 import { API } from "@/hooks/API";
-import { useNavigation, useRoute } from "@react-navigation/native";
-import navigate from "@/hooks/navigate";
+import { useNavigate } from "@/hooks/Navigate";
 import { objectKeys } from "common";
-import { StackNavigationList } from "@/App";
+import useGameState from "@/hooks/GameStore";
 
-export default function Host({ route }: ScreenProps) {
+export default function Host() {
 
-	const navigation = useNavigation();
-	const screen = useRoute();
+	const navigate = useNavigate();
+	const { game, client, setClientOptions } = useGameState();
 
 	const [id, setID] = useState<string>("XXXXXX");
-	const [players, setPlayers] = useState<ServerPlayer[]>([]);
-
-	const [hostName, setHostName] = useState<string>(route.params.name);
-
-	const [rosterSettings, setRosterSettings] = useState<ROSTER_SETTINGS>(route.params.rosterSettings);
+	const [hostName, setHostName] = useState<string>(client.name);
+	const [rosterSettings, setRosterSettings] = useState<ROSTER_SETTINGS>(game.settings);
 
 	useEffect(() => {
-		API.getCode().then(id => setID(id));
+		API.getCode().then(id => {
+			setID(id);
+			setClientOptions({
+				code: id,
+				online: true,
+				host: true
+			});
+		});
 	}, []);
-
-	const onState = useCallback((state: ServerGame) => {
-		setPlayers(state.players);
-	}, []);
-
-
-	API.stream(id, id != "XXXXXX", onState);
 
 	async function onStart() {
 		await API.settings(id, rosterSettings);
+		setClientOptions({
+			name: hostName
+		})
 		await API.join(id, hostName);
 		await API.start(id);
 
-		navigate(navigation as StackNavigationList, "GAME", {
-			...route.params,
-			online: true,
-			hosting: true,
-			code: id,
-			name: hostName,
-			rosterSettings,
-			round: 1
-		});
+		navigate("GAME");
 	}
 
 	// make network request here to get id generated for game
@@ -85,7 +72,7 @@ export default function Host({ route }: ScreenProps) {
 
 			</Box>
 
-			{players.map(player => (
+			{game.players.map(player => (
 				<Text className="text-white text-base text-center" key={player.name}>{player.name}</Text>
 			))}
 
