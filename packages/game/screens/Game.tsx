@@ -11,6 +11,7 @@ import { API } from '@/hooks/API';
 import { useNavigate } from '@/hooks/Navigate';
 import useGameState from '@/hooks/GameStore';
 import { useShallow } from 'zustand/shallow';
+import { View } from 'react-native';
 
 function genRoster(settings: ROSTER_SETTINGS): Roster {
     const roster: Record<string, null | undefined> = {};
@@ -72,9 +73,13 @@ export default function Game() {
 
     return (
         <>
-            <Box className='p-5'>
+            <View className='w-screen'>
 
-                <Text className="text-center text-white text-base m-2">{isFinished ? "Done!" : team}</Text>
+                <View className="bg-purple-700 w-3/4 md:w-1/4 h-20 rounded-2xl self-center justify-center">
+                    <Text className="text-white font-black text-2xl uppercase text-center">
+                        {isFinished ? "Done!" : team}
+                    </Text>
+                </View>
 
                 {/*<PlayerSelector pos={NFL_POSITIONS[0]} team={NFL_TEAMS[0]} />*/}
                 <RosterDisplay
@@ -86,9 +91,9 @@ export default function Game() {
                     }}
                 />
 
-                <Text className="text-center text-white text-base m-2">FPTS: {fpts.toFixed(1)}</Text>
+                <Text className="text-center text-white text-2xl">Total FPTS: {fpts}</Text>
 
-            </Box>
+            </View>
         </>
     );
 }

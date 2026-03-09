@@ -1,14 +1,13 @@
-import { API_URL, ClientOptions, ServerGame } from "common/types";
-import { useEffect, useState } from "react";
+import { API_URL, ServerGame } from "common/types";
+import { useEffect } from "react";
 import useGameState from "./GameStore";
 import EventSource from "react-native-sse";
 
-export default function ServerConnection() {
+export default function useServerConnection() {
 
 	const { client, setGame } = useGameState();
 
 	useEffect(() => {
-		console.log("Checking cond");
 		if (client.code == "XXXXXX" || !client.online) return;
 		
 		const es = new EventSource<"state">(`${API_URL}/api/hostStream/${client.code}`, {
@@ -25,6 +24,4 @@ export default function ServerConnection() {
 		});
 
 	}, [client.code, client.online]);
-
-	return null;
 }

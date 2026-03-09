@@ -18,9 +18,9 @@ export default function PlayerSelector({
 
     return (
         <>
-            <Select onOpen={() => setOpen(true)} className="m-1" >
-                <SelectTrigger className={selectedPlayer != null ? "cursor-pointer" : ""} variant="outline">
-                    <SelectInput className={selectedPlayer != null ? "placeholder:text-white text-center" : "text-center"} placeholder={selectedPlayer == null ? `Select a ${pos.split(" ")[0]}` : selectedPlayer?.name + " - " + selectedPlayer?.fpts.toFixed(1)} />
+            <Select onOpen={() => setOpen(true)} className="m-1 w-3/4 md:w-1/4 self-center" >
+                <SelectTrigger className={selectedPlayer != null ? "cursor-pointer h-[60px]" : "border-dashed h-[60px]"} variant="outline">
+                    <SelectInput className={selectedPlayer != null ? "placeholder:text-white text-center text-xl" : "text-center text-xl"} placeholder={selectedPlayer == null ? `Select a ${pos.split(" ")[0]}` : selectedPlayer?.name + " - " + selectedPlayer?.fpts.toFixed(1)} />
                     {/*<SelectInput />*/}
                 </SelectTrigger>
             </Select>

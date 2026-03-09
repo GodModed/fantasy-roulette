@@ -13,6 +13,7 @@ import { createNativeStackNavigator, NativeStackNavigationProp } from '@react-na
 import { useNavigate } from "./hooks/Navigate";
 import ServerConnection from "./hooks/ServerConnection";
 import useGameState from "./hooks/GameStore";
+import useServerConnection from "./hooks/ServerConnection";
 
 const RootStack = createNativeStackNavigator({
 	screenOptions: {
@@ -66,12 +67,14 @@ declare global {
 const Navigation = createStaticNavigation(RootStack);
 
 export default function App() {
+
+	useServerConnection();
+
 	return (
 		<GluestackUIProvider mode="dark">
 			<OverlayProvider>
 				<SafeAreaProvider>
 					<StatusBar barStyle="light-content" />
-					<ServerConnection />
 					<Navigation />
 				</SafeAreaProvider>
 			</OverlayProvider>
