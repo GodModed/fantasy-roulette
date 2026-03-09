@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Text } from "react-native";
+import { Text, View } from "react-native";
 import { Box } from "../components/ui/box";
 import { Input, InputField } from "../components/ui/input";
 import { Button } from "../components/ui/button";
@@ -51,18 +51,32 @@ export default function Join() {
 
 	return (
 		<>
-			<Box className="flex-column p-4 items-center">
-				<Input className="m-4">
-					<InputField className="text-white" value={code} onChangeText={setCode} placeholder="Code"></InputField>
-				</Input>
-
-				<Input className="m-4">
-					<InputField className="text-white" value={name} onChangeText={setName} placeholder="Name"></InputField>
-				</Input>
-
-				<Button className="m-4" onPress={onClick} disabled={waiting || name.trim() == "" || code.trim() == ""}>
-					<Text>Join</Text>
+			<View className="w-screen">
+				<View className="m-10">
+					<Text className="text-white text-4xl text-center font-black uppercase">Join</Text>
+					<Text className="text-purple-600 text-4xl text-center font-black uppercase">Roulette</Text>	
+				</View>
+				<View className="w-3/4 md:w-1/4 bg-zinc-950 rounded-2xl p-3 m-4 self-center">
+					<Input className="mx-1 my-4">
+						<InputField className="text-white" value={code} onChangeText={setCode} placeholder="Code"></InputField>
+					</Input>
+					<Input className="mx-1 my-4">
+						<InputField className="text-white" value={name} onChangeText={setName} placeholder="Name"></InputField>
+					</Input>
+				</View>
+				<Button
+					className="m-2 bg-purple-700 w-1/2 md:w-1/4 active:bg-purple-950 hover:bg-purple-800 self-center rounded-2xl disabled:bg-black"
+					onPress={onClick}
+					disabled={waiting || name.trim() == "" || code.trim() == ""}
+				>
+					<Text className="text-purple-300 text-center text-2xl font-black m-auto">Join</Text>
 				</Button>
+			</View>
+
+			<Box className="flex-column p-4 items-center">
+
+
+	
 
 			</Box>
 

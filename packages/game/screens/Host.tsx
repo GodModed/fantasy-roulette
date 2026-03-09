@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { ROSTER_SETTINGS } from "common/types";
-import { Text } from "react-native";
+import { Text, View } from "react-native";
 import { Box } from "../components/ui/box";
 import { Input, InputField } from "../components/ui/input";
 import { Button } from "../components/ui/button";
@@ -9,6 +9,7 @@ import { useNavigate } from "@/hooks/Navigate";
 import { objectKeys } from "common";
 import useGameState from "@/hooks/GameStore";
 import { useShallow } from "zustand/shallow";
+import { Slider, SliderFilledTrack, SliderThumb, SliderTrack } from "@/components/ui/slider";
 
 export default function Host() {
 
@@ -50,41 +51,101 @@ export default function Host() {
 		navigate("GAME");
 	}
 
-	// make network request here to get id generated for game
 
 	return (
 		<>
-			<Box className="flex-column p-4 items-center">
-				<Text className="m-4 text-white bg-rose-700 p-2 rounded text-base text-center justify-center font-mono">
-					{id}
-				</Text>
+			<View className="w-screen">
 
-				<Input className="m-4 text-white">
-					<InputField className="text-white" placeholder="Name" value={hostName} onChangeText={setHostName}></InputField>
-				</Input>
+				<View className="m-10">
+					<Text className="text-white text-4xl text-center font-black uppercase">
+						Host
+					</Text>
+					<Text className="text-purple-600 text-4xl text-center font-black uppercase">
+						Roulette
+					</Text>
+				</View>
 
-				{objectKeys(rosterSettings).map(setting => (
-					<Input className="m-1 text-white" key={setting}>
-						<InputField className="text-white" placeholder={setting} value={rosterSettings[setting]!.toString()} onChangeText={n => {
-							const num = parseInt(n);
-							if (Number.isNaN(num)) return;
-							setRosterSettings({
-								...rosterSettings,
-								[setting]: num
-							})
-						}} />
-					</Input>
+				<Box className="flex-column items-center">
+					<View className="bg-purple-700 w-3/4 md:w-1/4 h-20 rounded-2xl justify-center">
+						<Text className="text-white font-black text-2xl uppercase text-center self-center">
+							Code: {id}
+						</Text>	
+					</View>
+
+					<View className="w-3/4 md:w-1/4 bg-zinc-950 rounded-2xl p-3 m-4">
+
+						<Input className="mx-1 mb-4">
+							<InputField className="text-white" placeholder="Name" value={hostName} onChangeText={setHostName}></InputField>
+						</Input>
+
+						{objectKeys(rosterSettings).map(setting => (
+							// <Input key={setting} className="m-1">
+							// 	<InputField
+							// 		className="text-white"
+							// 		placeholder={setting}
+							// 		value={rosterSettings[setting]!.toString()}
+							// 		onChangeText={n => {
+							// 			const num = parseInt(n);
+							// 			if (Number.isNaN(num)) return;
+							// 			setRosterSettings({
+							// 				...rosterSettings,
+							// 				[setting]: num
+							// 			});
+							// 		}}
+							// 	/>
+							// </Input>
+
+							<View className="flex-row items-center gap-4 m-2">
+								<View className="w-16">
+									<Text className="text-white">{setting} {rosterSettings[setting]}</Text>
+								</View>
+								
+
+								<View className="flex-1">
+									<Slider
+										value={rosterSettings[setting]}
+										onChange={e => {
+											setRosterSettings({
+												...rosterSettings,
+												[setting]: e
+											})
+										}}
+										size="sm"
+										maxValue={5}
+										step={1}
+										minValue={0}
+										orientation="horizontal"
+										className="my-4 m-auto"
+									>
+										<SliderTrack>
+											<SliderFilledTrack />
+										</SliderTrack>
+										<SliderThumb />
+									</Slider>	
+								</View>
+
+								
+							</View>
+
+							
+						))}
+					</View>
+
+					<Button
+						className="m-2 bg-purple-700 w-1/2 md:w-1/4 active:bg-purple-950 hover:bg-purple-800 self-center rounded-2xl disabled:bg-black"
+						onPress={onStart}
+						disabled={id == "XXXXXX" || hostName.trim() == ""}
+					>
+						<Text className="text-purple-300 text-center text-2xl font-black m-auto">Start</Text>
+					</Button>
+
+				</Box>
+
+				{gamePlayers.map(player => (
+					<Text className="text-white text-base text-center" key={player.name}>{player.name}</Text>
 				))}
 
-				<Button className="m-4" onPress={onStart} disabled={id == "XXXXXX" || hostName.trim() == ""}>
-					<Text className="text-black">Start</Text>
-				</Button>
-
-			</Box>
-
-			{gamePlayers.map(player => (
-				<Text className="text-white text-base text-center" key={player.name}>{player.name}</Text>
-			))}
+			</View>
 
 		</>
 	)
