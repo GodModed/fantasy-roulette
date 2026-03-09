@@ -46,11 +46,11 @@ export default function Results() {
 	}
 
 	
-	return <View className="flex-1">
-		{clientHost && <Button className="m-4" onPress={onAgain}>
-			<Text>Again?</Text>
+	return <View className="flex-1 w-screen">
+		{clientHost && <Button className="m-2 bg-purple-700 w-1/2 md:w-1/4 active:bg-purple-950 hover:bg-purple-800 self-center justify-center rounded-2xl disabled:bg-black px-4 py-2" onPress={onAgain}>
+			<Text className="text-white text-center text-2xl font-black m-auto">Again?</Text>
 		</Button>}
-		<Text className="text-center text-base text-white">{numFinished}/{gamePlayers.length} Finished</Text>
+		<Text className="text-center text-white font-black text-xl rounded">{numFinished}/{gamePlayers.length} Finished</Text>
 		<ScrollView
 			className="flex-1"
 			contentContainerStyle={{
@@ -58,18 +58,16 @@ export default function Results() {
 				paddingHorizontal: 16
 			}}
 		>
-			{sortedPlayers.map(p => {
+			{sortedPlayers.map((p, i) => {
 
 				if (!p.roster) return;
 
-				return <Box key={p.name} className="p-5">
-					<Text className="text-center text-base text-white">{p.name}</Text>
+				return <Box key={i} className="p-5 border m-2">
+					<Text className="text-center text-2xl text-white">#{i + 1} {p.name}</Text>
 					{p.roster && <>
 						<RosterDisplay roster={p.roster} />
-						<Text className="text-center text-base text-white">FPTS: {p.fpts.toFixed(1)}</Text>
-					</>}
-							
-					<Divider />
+						<Text className="text-center text-white text-2xl m-2">FPTS: {p.fpts.toFixed(1)}</Text>
+					</>}							
 				</Box>
 			})}
 		</ScrollView>

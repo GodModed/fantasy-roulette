@@ -73,7 +73,7 @@ export default function Game() {
 
     return (
         <>
-            <View className='w-screen'>
+            <View className='w-screen flex-1'>
 
                 <View className="bg-purple-700 w-3/4 md:w-1/4 h-20 rounded-2xl self-center justify-center">
                     <Text className="text-white font-black text-2xl uppercase text-center">
@@ -91,7 +91,7 @@ export default function Game() {
                     }}
                 />
 
-                <Text className="text-center text-white text-2xl">Total FPTS: {fpts}</Text>
+                <Text className="text-center text-white text-2xl m-2">Total FPTS: {fpts.toFixed(1)}</Text>
 
             </View>
         </>

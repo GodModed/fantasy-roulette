@@ -200,22 +200,22 @@ const app = new Hono()
 	.use(logger())
 	// .use('*', cors())
 	.route('/api', api)
-	.get('*', serveStatic({
-		root: "../game/dist"
-	}))
-	// .all('*', (c) => {
-	// 	const url = new URL(c.req.url);
-	// 	url.host = new URL(TARGET).host;
-	// 	url.protocol = new URL(TARGET).protocol;
+	// .get('*', serveStatic({
+	// 	root: "../game/dist"
+	// }))
+	.all('*', (c) => {
+		const url = new URL(c.req.url);
+		url.host = new URL(TARGET).host;
+		url.protocol = new URL(TARGET).protocol;
 
-	// 	return proxyWs(url.toString(), {
-	// 		...c.req,
-	// 		headers: {
-	// 			...c.req.header(),
-	// 			host: new URL(TARGET).host
-	// 		}
-	// 	}, c)
-	// })
+		return proxyWs(url.toString(), {
+			...c.req,
+			headers: {
+				...c.req.header(),
+				host: new URL(TARGET).host
+			}
+		}, c)
+	})
 
 
 import { websocket } from 'hono/bun';
