@@ -1,4 +1,4 @@
-import { Text } from "react-native";
+import { Pressable, Text, View } from "react-native";
 import { Button, ButtonGroup } from "../components/ui/button";
 import { SCREEN } from "common/types";
 import { useNavigate } from "@/hooks/Navigate";
@@ -7,13 +7,17 @@ import useGameState from "@/hooks/GameStore";
 export default function Home() {
 	return (
 		<>
-			<Text className="text-white text-center text-base text-lg m-10">Fantasy Roulette</Text>
-			<ButtonGroup space="sm" flexDirection="column">
-				<ScreenButton displayName="SOLO" screen="GAME" />
-				<ScreenButton displayName="JOIN" screen="JOIN" />
-				<ScreenButton displayName="HOST" screen="HOST" />
-			</ButtonGroup>
-
+			<View className="w-screen">
+				<View className="m-10">
+					<Text className="text-white text-4xl text-center font-black uppercase">Fantasy</Text>
+					<Text className="text-purple-600 text-4xl text-center font-black uppercase">Roulette</Text>	
+				</View>
+				<ButtonGroup space="sm" flexDirection="column" className="w-screen self-center">
+					<ScreenButton displayName="SOLO" screen="GAME" />
+					<ScreenButton displayName="JOIN" screen="JOIN" />
+					<ScreenButton displayName="HOST" screen="HOST" />
+				</ButtonGroup>
+			</View>
 		</>
 	)
 }
@@ -30,8 +34,8 @@ function ScreenButton({
 	const navigate = useNavigate();
 
 
-	return <Button
-		className="bg-zinc-800 hover:bg-zinc-900"
+	return <Pressable
+		className="bg-purple-700 h-20 w-[25%] active:bg-purple-950 hover:bg-purple-800 shadow-md self-center px-4 py-2 rounded-2xl"
 		onPress={() => {
 			setClientOptions({
 				code: "XXXXXX",
@@ -41,6 +45,6 @@ function ScreenButton({
 			navigate(screen)
 		}}
 	>
-		<Text className="text-white text-base">{displayName}</Text>
-	</Button>
+		<Text className="text-purple-300 text-center text-2xl font-black m-auto">{displayName}</Text>
+	</Pressable>
 }
