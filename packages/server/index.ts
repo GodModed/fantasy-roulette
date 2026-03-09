@@ -1,9 +1,9 @@
 import { Hono } from 'hono';
-import { cors } from 'hono/cors';
+// import { cors } from 'hono/cors';
 import { proxy } from 'hono/proxy';
-import { streamSSE, SSEStreamingApi } from 'hono/streaming';
+import { streamSSE } from 'hono/streaming';
 import { EventEmitter } from 'node:events';
-import { type ServerPlayer, type ServerGame, NFL_TEAMS, type Roster, SCREEN, type ROSTER_SETTINGS } from "common/types";
+import { type ServerGame, NFL_TEAMS, type Roster, type ROSTER_SETTINGS } from "common/types";
 import { getFantasyPoints, shuffle } from 'common';
 import { logger } from 'hono/logger';
 import { validator } from 'hono/validator';
@@ -84,6 +84,7 @@ const api = new Hono()
 
 		for (const p of game.players) {
 			delete p.roster;
+			p.fpts = 0;
 		}
 
 
@@ -200,22 +201,22 @@ const app = new Hono()
 	.use(logger())
 	// .use('*', cors())
 	.route('/api', api)
-	// .get('*', serveStatic({
-	// 	root: "../game/dist"
-	// }))
-	.all('*', (c) => {
-		const url = new URL(c.req.url);
-		url.host = new URL(TARGET).host;
-		url.protocol = new URL(TARGET).protocol;
+	.get('*', serveStatic({
+		root: "../game/dist"
+	}))
+	// .all('*', (c) => {
+	// 	const url = new URL(c.req.url);
+	// 	url.host = new URL(TARGET).host;
+	// 	url.protocol = new URL(TARGET).protocol;
 
-		return proxyWs(url.toString(), {
-			...c.req,
-			headers: {
-				...c.req.header(),
-				host: new URL(TARGET).host
-			}
-		}, c)
-	})
+	// 	return proxyWs(url.toString(), {
+	// 		...c.req,
+	// 		headers: {
+	// 			...c.req.header(),
+	// 			host: new URL(TARGET).host
+	// 		}
+	// 	}, c)
+	// })
 
 
 import { websocket } from 'hono/bun';
