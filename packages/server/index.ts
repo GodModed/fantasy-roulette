@@ -149,7 +149,7 @@ const api = new Hono()
 				aborted = true;
 				hostRoomEmitter.off("state-" + code, emitState);
 				game.listeners--;
-				if (game.listeners == 0 && !game.started) {
+				if (game.listeners == 0) {
 					delete games[code];
 				}
 
@@ -163,7 +163,7 @@ const api = new Hono()
 	})
 
 import type { Context } from 'hono';
-import { upgradeWebSocket } from 'hono/bun';
+import { serveStatic, upgradeWebSocket } from 'hono/bun';
 // import { upgradeWebSocket } from 'hono';
 
 export function proxyWs(proxyUrl: Parameters<typeof proxy>[0], proxyInit: Parameters<typeof proxy>[1], c: Context) {
@@ -200,19 +200,22 @@ const app = new Hono()
 	.use(logger())
 	// .use('*', cors())
 	.route('/api', api)
-	.all('*', (c) => {
-		const url = new URL(c.req.url);
-		url.host = new URL(TARGET).host;
-		url.protocol = new URL(TARGET).protocol;
+	.get('*', serveStatic({
+		root: "../game/dist"
+	}))
+	// .all('*', (c) => {
+	// 	const url = new URL(c.req.url);
+	// 	url.host = new URL(TARGET).host;
+	// 	url.protocol = new URL(TARGET).protocol;
 
-		return proxyWs(url.toString(), {
-			...c.req,
-			headers: {
-				...c.req.header(),
-				host: new URL(TARGET).host
-			}
-		}, c)
-	})
+	// 	return proxyWs(url.toString(), {
+	// 		...c.req,
+	// 		headers: {
+	// 			...c.req.header(),
+	// 			host: new URL(TARGET).host
+	// 		}
+	// 	}, c)
+	// })
 
 
 import { websocket } from 'hono/bun';
@@ -224,5 +227,3 @@ export default {
 	websocket
 };
 export type Server = typeof app;
-
-// TODO: add support for bigger rosters.

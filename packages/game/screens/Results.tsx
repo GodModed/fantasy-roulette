@@ -24,11 +24,15 @@ export default function Results() {
 		}))
 	);
 
-	let numFinished = useMemo(() => {
+	const numFinished = useMemo(() => {
 		return gamePlayers.reduce((acc, player) => {
 			if (player.roster && rosterIsComplete(player.roster)) return acc + 1;
 			return acc;
 		}, 0);
+	}, [gamePlayers]);
+
+	const sortedPlayers = useMemo(() => {
+		return gamePlayers.sort((a, b) => b.fpts - a.fpts);
 	}, [gamePlayers]);
 
 	const [round, _] = useState<number>(gameRound);
@@ -54,7 +58,7 @@ export default function Results() {
 				paddingHorizontal: 16
 			}}
 		>
-			{gamePlayers.map(p => {
+			{sortedPlayers.map(p => {
 
 				if (!p.roster) return;
 

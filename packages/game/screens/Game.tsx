@@ -40,16 +40,18 @@ export default function Game() {
 
     const [roster, setRoster] = useState<Roster>(genRoster(gameSettings));
     const [teams, setTeams] = useState<NFLTeam[]>(shuffle([...NFL_TEAMS]));
+    const [rosterSet, setRosterSet] = useState<boolean>(false);
 
     useEffect(() => {
-        if (!clientOnline) return;
+        if (!clientOnline || rosterSet) return;
         if (gameTeamOrder.length != 0) {
             console.log("GOT TEAMS", gameTeamOrder);
             console.log("GOT ROSTER SETTINGS", gameSettings);
             setTeams(gameTeamOrder);
             setRoster(genRoster(gameSettings));
+            setRosterSet(true);
         }
-    }, [gameTeamOrder, gameSettings]);
+    }, [gameTeamOrder, gameSettings, rosterSet]);
 
     const [teamIdx, setTeamIdx] = useState<number>(0);
     const team = teams[teamIdx];
