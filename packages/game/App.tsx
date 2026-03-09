@@ -81,7 +81,9 @@ export default function App() {
 
 function HomeButton() {
 
-	const { setClientOptions, setGame } = useGameState();
+	const setClientOptions = useGameState(state => state.setClientOptions);
+	const setGame = useGameState(state => state.setGame);
+
 	const navigate = useNavigate();
 
 	const route = useRoute();	

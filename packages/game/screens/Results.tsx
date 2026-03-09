@@ -8,35 +8,45 @@ import { API } from "@/hooks/API";
 import useGameState from "@/hooks/GameStore";
 import { useNavigate } from "@/hooks/Navigate";
 import { rosterIsComplete } from "common";
+import { useShallow } from "zustand/shallow";
 
 export default function Results() {
 
 	const navigate = useNavigate();
-	const { game, client } = useGameState();
+
+
+	const { gamePlayers, gameRound, clientHost, clientCode } = useGameState(
+		useShallow((state) => ({
+			gamePlayers: state.game.players,
+			gameRound: state.game.round,
+			clientHost: state.client.host,
+			clientCode: state.client.code
+		}))
+	);
 
 	let numFinished = useMemo(() => {
-		return game.players.reduce((acc, player) => {
+		return gamePlayers.reduce((acc, player) => {
 			if (player.roster && rosterIsComplete(player.roster)) return acc + 1;
 			return acc;
 		}, 0);
-	}, game.players);
+	}, [gamePlayers]);
 
-	const [round, _] = useState<number>(game.round);
+	const [round, _] = useState<number>(gameRound);
 	useEffect(() => {
-		if (game.round == round) return;
+		if (gameRound == round) return;
 		navigate("GAME");
-	}, [game.round]);
+	}, [gameRound]);
 
 	async function onAgain() {
-		await API.start(client.code);
+		await API.start(clientCode);
 	}
 
 	
 	return <View className="flex-1">
-		{client.host && <Button className="m-4" onPress={onAgain}>
+		{clientHost && <Button className="m-4" onPress={onAgain}>
 			<Text>Again?</Text>
 		</Button>}
-		<Text className="text-center text-base text-white">{numFinished}/{game.players.length} Finished</Text>
+		<Text className="text-center text-base text-white">{numFinished}/{gamePlayers.length} Finished</Text>
 		<ScrollView
 			className="flex-1"
 			contentContainerStyle={{
@@ -44,7 +54,7 @@ export default function Results() {
 				paddingHorizontal: 16
 			}}
 		>
-			{game.players.map(p => {
+			{gamePlayers.map(p => {
 
 				if (!p.roster) return;
 

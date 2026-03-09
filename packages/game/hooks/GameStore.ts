@@ -1,6 +1,5 @@
 import { ClientOptions, ServerGame } from "common/types";
 import { create } from "zustand";
-import { devtools } from "zustand/middleware";
 
 interface GameState {
 	game: ServerGame,

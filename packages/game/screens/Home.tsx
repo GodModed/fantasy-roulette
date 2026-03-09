@@ -26,7 +26,7 @@ function ScreenButton({
 	screen: SCREEN
 }) {
 
-	const { setClientOptions } = useGameState();
+	const setClientOptions = useGameState(state => state.setClientOptions);
 	const navigate = useNavigate();
 
 

@@ -8,15 +8,25 @@ import { API } from "@/hooks/API";
 import { useNavigate } from "@/hooks/Navigate";
 import { objectKeys } from "common";
 import useGameState from "@/hooks/GameStore";
+import { useShallow } from "zustand/shallow";
 
 export default function Host() {
 
 	const navigate = useNavigate();
-	const { game, client, setClientOptions } = useGameState();
+
+	const { clientName, gameSettings, setClientOptions, gamePlayers } = useGameState(
+		useShallow(state => ({
+			clientName: state.client.name,
+			gameSettings: state.game.settings,
+			setClientOptions: state.setClientOptions,
+			gamePlayers: state.game.players
+		}))
+	);
+
 
 	const [id, setID] = useState<string>("XXXXXX");
-	const [hostName, setHostName] = useState<string>(client.name);
-	const [rosterSettings, setRosterSettings] = useState<ROSTER_SETTINGS>(game.settings);
+	const [hostName, setHostName] = useState<string>(clientName);
+	const [rosterSettings, setRosterSettings] = useState<ROSTER_SETTINGS>(gameSettings);
 
 	useEffect(() => {
 		API.getCode().then(id => {
@@ -72,7 +82,7 @@ export default function Host() {
 
 			</Box>
 
-			{game.players.map(player => (
+			{gamePlayers.map(player => (
 				<Text className="text-white text-base text-center" key={player.name}>{player.name}</Text>
 			))}
 

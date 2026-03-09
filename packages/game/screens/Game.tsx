@@ -10,6 +10,7 @@ import RosterDisplay from '@/components/game/RosterDisplay';
 import { API } from '@/hooks/API';
 import { useNavigate } from '@/hooks/Navigate';
 import useGameState from '@/hooks/GameStore';
+import { useShallow } from 'zustand/shallow';
 
 function genRoster(settings: ROSTER_SETTINGS): Roster {
     const roster: Record<string, null | undefined> = {};
@@ -26,20 +27,29 @@ function genRoster(settings: ROSTER_SETTINGS): Roster {
 export default function Game() {
 
     const navigate = useNavigate();
-    const { game, client } = useGameState();
 
-    const [roster, setRoster] = useState<Roster>(genRoster(game.settings));
+    const { gameSettings, clientOnline, gameTeamOrder, clientCode, clientName } = useGameState(
+        useShallow(state => ({
+            gameSettings: state.game.settings,
+            clientOnline: state.client.online,
+            gameTeamOrder: state.game.teamOrder,
+            clientCode: state.client.code,
+            clientName: state.client.name
+        }))
+    );
+
+    const [roster, setRoster] = useState<Roster>(genRoster(gameSettings));
     const [teams, setTeams] = useState<NFLTeam[]>(shuffle([...NFL_TEAMS]));
 
     useEffect(() => {
-        if (!client.online) return;
-        if (game.teamOrder.length != 0) {
-            console.log("GOT TEAMS", game.teamOrder);
-            console.log("GOT ROSTER SETTINGS", game.settings);
-            setTeams(game.teamOrder);
-            setRoster(genRoster(game.settings));
+        if (!clientOnline) return;
+        if (gameTeamOrder.length != 0) {
+            console.log("GOT TEAMS", gameTeamOrder);
+            console.log("GOT ROSTER SETTINGS", gameSettings);
+            setTeams(gameTeamOrder);
+            setRoster(genRoster(gameSettings));
         }
-    }, [game.teamOrder, game.settings]);
+    }, [gameTeamOrder, gameSettings]);
 
     const [teamIdx, setTeamIdx] = useState<number>(0);
     const team = teams[teamIdx];
@@ -50,9 +60,9 @@ export default function Game() {
     }, [roster]);
 
     useEffect(() => {
-        if (!isFinished || !client.online) return;
+        if (!isFinished || !clientOnline) return;
 
-        API.done(client.code, client.name, roster).then(() => {
+        API.done(clientCode, clientName, roster).then(() => {
             navigate("RESULTS");
         });
 

@@ -6,14 +6,21 @@ import { Button } from "../components/ui/button";
 import { API } from "@/hooks/API";
 import { useNavigate } from "@/hooks/Navigate";
 import useGameState from "@/hooks/GameStore";
+import { useShallow } from "zustand/shallow";
 
 export default function Join() {
 
 	const navigate = useNavigate();
-	const { game, client, setClientOptions } = useGameState();
+	const { setClientOptions, clientName, gameStarted } = useGameState(
+		useShallow((state) => ({
+			setClientOptions: state.setClientOptions,
+			clientName: state.client.name,
+			gameStarted: state.game.started
+		}))
+	)
 
 	const [code, setCode] = useState<string>("");
-	const [name, setName] = useState<string>(client.name);
+	const [name, setName] = useState<string>(clientName);
 	const [waiting, setWaiting] = useState<boolean>(false);
 
 	useEffect(() => {
@@ -24,10 +31,10 @@ export default function Join() {
 	}, [])
 
 	useEffect(() => {
-		if (game.started && waiting) {
+		if (gameStarted && waiting) {
 			navigate("GAME");
 		}
-	}, [game.started, waiting])
+	}, [gameStarted, waiting])
 
 	async function onClick() {
 		const isIn = await API.join(code, name);
