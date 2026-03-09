@@ -65,24 +65,17 @@ export default function Join() {
 					</Input>
 				</View>
 				<Button
-					className="m-2 bg-purple-700 w-1/2 md:w-1/4 active:bg-purple-950 hover:bg-purple-800 self-center rounded-2xl disabled:bg-black"
+					className="m-2 bg-purple-700 w-1/2 md:w-1/4 active:bg-purple-950 hover:bg-purple-800 self-center rounded-2xl disabled:bg-black px-4 py-2"
 					onPress={onClick}
 					disabled={waiting || name.trim() == "" || code.trim() == ""}
 				>
 					<Text className="text-purple-300 text-center text-2xl font-black m-auto">Join</Text>
 				</Button>
+
+				{waiting && (
+					<Text className="text-center text-white text-2xl">Waiting for host to start the game...</Text>
+				)}
 			</View>
-
-			<Box className="flex-column p-4 items-center">
-
-
-	
-
-			</Box>
-
-			{waiting && (
-				<Text className="text-base text-center text-white text-xl">Waiting for host to start the game...</Text>
-			)}
 
 		</>
 	)

@@ -132,7 +132,7 @@ export default function Host() {
 					</View>
 
 					<Button
-						className="m-2 bg-purple-700 w-1/2 md:w-1/4 active:bg-purple-950 hover:bg-purple-800 self-center rounded-2xl disabled:bg-black"
+						className="m-2 bg-purple-700 w-1/2 md:w-1/4 active:bg-purple-950 hover:bg-purple-800 self-center rounded-2xl disabled:bg-black px-4 py-2"
 						onPress={onStart}
 						disabled={id == "XXXXXX" || hostName.trim() == ""}
 					>
