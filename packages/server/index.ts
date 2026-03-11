@@ -150,9 +150,10 @@ const api = new Hono()
 				aborted = true;
 				hostRoomEmitter.off("state-" + code, emitState);
 				game.listeners--;
-				if (game.listeners == 0) {
-					delete games[code];
-				}
+				// need to find a different way soon
+				// if (game.listeners == 0) {
+				// 	delete games[code];
+				// }
 
 			});
 

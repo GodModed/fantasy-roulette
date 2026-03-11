@@ -59,9 +59,6 @@ export default function Results() {
 			}}
 		>
 			{sortedPlayers.map((p, i) => {
-
-				if (!p.roster) return;
-
 				return <Box key={i} className="p-5 border m-2">
 					<Text className="text-center text-2xl text-white">#{i + 1} {p.name}</Text>
 					{p.roster && <>

@@ -63,13 +63,16 @@ export default function Game() {
     }, [roster]);
 
     useEffect(() => {
-        if (!isFinished || !clientOnline) return;
 
+        if (!clientOnline) return;
         API.done(clientCode, clientName, roster).then(() => {
+            if (!isFinished) return;
             navigate("RESULTS");
         });
 
-    }, [isFinished]);
+    }, [roster]);
+
+    // TODO: figure out how to send partial rosters to server and make it render in results
 
     return (
         <>

@@ -4,7 +4,7 @@ import Game from "./screens/Game";
 import Home from "./screens/Home";
 import Host from "./screens/Host";
 import Join from "./screens/Join";
-import { StatusBar, Text } from "react-native";
+import { Pressable, StatusBar, Text } from "react-native";
 import { Button } from "./components/ui/button";
 import { OverlayProvider } from "@gluestack-ui/overlay";
 import Results from "./screens/Results";
@@ -94,8 +94,8 @@ function HomeButton() {
 
 
 	return (
-		<Button
-			className="m-4"
+		<Pressable
+			className="m-2 bg-purple-700 w-3/4 md:w-1/4 active:bg-purple-950 hover:bg-purple-800 shadow-md self-center px-4 py-2 rounded-2xl"
 			onPress={() => {
 				setClientOptions({
 					code: "XXXXXX",
@@ -107,9 +107,9 @@ function HomeButton() {
 					started: false
 				})
 				navigate("HOME");
-			}} 
+			}}
 		>
-			<Text>Home</Text>
-		</Button>
+			<Text className="text-purple-300 text-center text-2xl font-black m-auto">HOME</Text>
+		</Pressable>
 	);
 }

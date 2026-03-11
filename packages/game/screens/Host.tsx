@@ -37,6 +37,7 @@ export default function Host() {
 				online: true,
 				host: true
 			});
+			API.settings(id, rosterSettings);
 		});
 	}, []);
 
@@ -108,7 +109,8 @@ export default function Host() {
 											setRosterSettings({
 												...rosterSettings,
 												[setting]: e
-											})
+											});
+											API.settings(id, rosterSettings);
 										}}
 										size="sm"
 										maxValue={5}
@@ -141,8 +143,9 @@ export default function Host() {
 
 				</Box>
 
+				<Text className="text-white text-2xl text-center">Connected players: {gamePlayers.length}</Text>
 				{gamePlayers.map(player => (
-					<Text className="text-white text-base text-center" key={player.name}>{player.name}</Text>
+					<Text className="text-white text-md text-center" key={player.name}>{player.name}</Text>
 				))}
 
 			</View>
