@@ -27,6 +27,7 @@ function getUniqueCode(): string {
 }
 
 const games: Record<string, ServerGame> = {};
+const timeouts: Record<string, ReturnType<typeof setTimeout>> = {};
 const hostRoomEmitter = new EventEmitter();
 
 const TARGET = "http://localhost:8081";
@@ -140,7 +141,7 @@ const api = new Hono()
 			}
 
 			game.listeners++;
-
+			if (timeouts[code]) clearTimeout(timeouts[code]);
 			emitState();
 
 			let aborted = false;
@@ -150,6 +151,19 @@ const api = new Hono()
 				aborted = true;
 				hostRoomEmitter.off("state-" + code, emitState);
 				game.listeners--;
+
+				if (game.listeners == 0) {
+					if (timeouts[code]) clearTimeout(timeouts[code]);
+					timeouts[code] = setTimeout(() => {
+						if (game.listeners != 0) return;
+						console.log("Deleted code", code);
+						delete games[code];
+						delete timeouts[code];
+					}, 1000 * 60 * 10)
+
+					console.log("Started timeout for code", code);
+				}
+
 				// need to find a different way soon
 				// if (game.listeners == 0) {
 				// 	delete games[code];
@@ -221,6 +235,7 @@ const app = new Hono()
 
 
 import { websocket } from 'hono/bun';
+import { setTimeout } from 'node:timers';
 
 
 export default {
