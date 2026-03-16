@@ -11,7 +11,6 @@ import Results from "./screens/Results";
 import { createStaticNavigation, StaticParamList, useRoute } from "@react-navigation/native";
 import { createNativeStackNavigator, NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { useNavigate } from "./hooks/Navigate";
-import ServerConnection from "./hooks/ServerConnection";
 import useGameState from "./hooks/GameStore";
 import useServerConnection from "./hooks/ServerConnection";
 

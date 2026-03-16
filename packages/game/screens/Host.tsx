@@ -10,6 +10,7 @@ import { objectKeys } from "common";
 import useGameState from "@/hooks/GameStore";
 import { useShallow } from "zustand/shallow";
 import { Slider, SliderFilledTrack, SliderThumb, SliderTrack } from "@/components/ui/slider";
+import Alert from "@blazejkustra/react-native-alert";
 
 export default function Host() {
 
@@ -31,6 +32,7 @@ export default function Host() {
 
 	useEffect(() => {
 		API.getCode().then(id => {
+			if (id == "XXXXXX") return Alert.alert('Error', 'Could not generate a game code.');
 			setID(id);
 			setClientOptions({
 				code: id,
@@ -42,14 +44,19 @@ export default function Host() {
 	}, []);
 
 	async function onStart() {
-		await API.settings(id, rosterSettings);
-		setClientOptions({
-			name: hostName
-		})
-		await API.join(id, hostName);
-		await API.start(id);
+		try {
+			await API.settings(id, rosterSettings);
+			setClientOptions({
+				name: hostName
+			})
+			await API.join(id, hostName);
+			await API.start(id);
+			navigate("GAME");		
+		} catch (e) {
+			Alert.alert('Erorr', 'Could not start the game.');
+		}
+		
 
-		navigate("GAME");
 	}
 
 

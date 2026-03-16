@@ -1,5 +1,8 @@
 {
 	"name": "fantasy-monorepo",
 	"private": true,
-	"workspaces": ["packages/*"]
+	"workspaces": ["packages/*"],
+	"dependencies": {
+		"@legendapp/motion": "^2.4.0"
+	}
 }

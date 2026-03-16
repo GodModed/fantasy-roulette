@@ -4,7 +4,6 @@ import { NFL_TEAMS, NFLTeam, Roster, ROSTER_SETTINGS } from 'common/types';
 import { useEffect, useMemo, useState } from 'react';
 
 import '@/global.css';
-import { Box } from '../components/ui/box';
 
 import RosterDisplay from '@/components/game/RosterDisplay';
 import { API } from '@/hooks/API';
@@ -72,8 +71,6 @@ export default function Game() {
 
     }, [roster]);
 
-    // TODO: figure out how to send partial rosters to server and make it render in results
-
     return (
         <>
             <View className='w-screen flex-1'>
@@ -84,7 +81,6 @@ export default function Game() {
                     </Text>
                 </View>
 
-                {/*<PlayerSelector pos={NFL_POSITIONS[0]} team={NFL_TEAMS[0]} />*/}
                 <RosterDisplay
                     roster={roster}
                     setRoster={setRoster}

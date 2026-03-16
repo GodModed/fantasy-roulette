@@ -3,7 +3,6 @@ import { Button } from "../components/ui/button";
 import { useEffect, useMemo, useState } from "react";
 import { Box } from "@/components/ui/box";
 import RosterDisplay from "@/components/game/RosterDisplay";
-import { Divider } from "@/components/ui/divider";
 import { API } from "@/hooks/API";
 import useGameState from "@/hooks/GameStore";
 import { useNavigate } from "@/hooks/Navigate";

@@ -7,6 +7,8 @@ import { type ServerGame, NFL_TEAMS, type Roster, type ROSTER_SETTINGS } from "c
 import { getFantasyPoints, shuffle } from 'common';
 import { logger } from 'hono/logger';
 import { validator } from 'hono/validator';
+import { websocket } from 'hono/bun';
+import { setTimeout } from 'node:timers';
 
 EventEmitter.setMaxListeners(100);
 
@@ -164,11 +166,6 @@ const api = new Hono()
 					console.log("Started timeout for code", code);
 				}
 
-				// need to find a different way soon
-				// if (game.listeners == 0) {
-				// 	delete games[code];
-				// }
-
 			});
 
 			while (!aborted) {
@@ -233,9 +230,6 @@ const app = new Hono()
 	// 	}, c)
 	// })
 
-
-import { websocket } from 'hono/bun';
-import { setTimeout } from 'node:timers';
 
 
 export default {

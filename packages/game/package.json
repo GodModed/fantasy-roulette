@@ -9,6 +9,7 @@
     "web": "expo start --web"
   },
   "dependencies": {
+    "@blazejkustra/react-native-alert": "^1.0.0",
     "@expo/html-elements": "^0.12.5",
     "@gluestack-ui/core": "^3.0.10",
     "@gluestack-ui/overlay": "^0.1.22",

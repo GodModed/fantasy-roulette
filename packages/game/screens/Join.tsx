@@ -9,6 +9,7 @@ import useGameState from "@/hooks/GameStore";
 import { useShallow } from "zustand/shallow";
 import { Slider, SliderFilledTrack, SliderThumb, SliderTrack } from "@/components/ui/slider";
 import { objectKeys } from "common";
+import Alert from '@blazejkustra/react-native-alert';
 
 export default function Join() {
 
@@ -49,7 +50,10 @@ export default function Join() {
 				name
 			});
 		}
-		else setWaiting(false);
+		else {
+			setWaiting(false);
+			Alert.alert('Error', 'Failed to join the game.');
+		}
 	}
 
 	return (

@@ -3,6 +3,7 @@ import { useState } from "react";
 import { Actionsheet, ActionsheetBackdrop, ActionsheetContent, ActionsheetDragIndicatorWrapper, ActionsheetDragIndicator, ActionsheetItem, ActionsheetItemText, ActionsheetScrollView } from "../ui/actionsheet";
 import { Select, SelectTrigger, SelectInput } from "../ui/select";
 import { ROSTERS } from "common/rosters";
+import Alert from '@blazejkustra/react-native-alert';
 
 export default function PlayerSelector({
     pos, team,
@@ -45,7 +46,16 @@ export default function PlayerSelector({
                             {getAllPlayers(team, pos.split(" ")[0] as NFLPosition | "FLEX").map(player => (
                                 <ActionsheetItem key={player.name} onPress={() => {
                                     setOpen(false);
-                                    setSelectedPlayer(player)
+                                    Alert.alert(
+                                        'Confirm',
+                                        `Are you sure you want to select ${player.name}`,
+                                        [
+                                            { text: 'Cancel', style: 'cancel' },
+                                            { text: 'OK', style: 'default', onPress: () => {
+                                                setSelectedPlayer(player)
+                                            } }
+                                        ]
+                                    )
                                 }}>
                                     <ActionsheetItemText>{player.name}</ActionsheetItemText>
                                 </ActionsheetItem>
