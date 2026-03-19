@@ -3,9 +3,6 @@
   "workspaces": {
     "": {
       "name": "fantasy-monorepo",
-      "dependencies": {
-        "@legendapp/motion": "^2.4.0",
-      },
     },
     "packages/common": {
       "name": "common",

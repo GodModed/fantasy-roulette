@@ -2,7 +2,8 @@
 	"name": "fantasy-monorepo",
 	"private": true,
 	"workspaces": ["packages/*"],
-	"dependencies": {
-		"@legendapp/motion": "^2.4.0"
+	"scripts": {
+		"frontend:build": "bun run --cwd packages/game build",
+		"backend:start": "bun run --cwd packages/server index.ts"		
 	}
 }
