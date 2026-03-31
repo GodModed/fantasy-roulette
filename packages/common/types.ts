@@ -124,6 +124,6 @@ export type ServerGame = {
 
 export type ServerEvent = "join" | "start" | "team" | "roster";
 
-export const API_URL = "http://10.212.47.13:3000";
+export const API_URL = "";
 
 export type ScreenProps = StaticScreenProps<GENERAL_STATE>;
