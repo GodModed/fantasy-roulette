@@ -103,7 +103,7 @@ export default function Host() {
 							// 	/>
 							// </Input>
 
-							<View className="flex-row items-center gap-4 m-2">
+							<View className="flex-row items-center gap-4 m-2" key={setting}>
 								<View className="w-16">
 									<Text className="text-white">{setting} {rosterSettings[setting]}</Text>
 								</View>
@@ -113,11 +113,12 @@ export default function Host() {
 									<Slider
 										value={rosterSettings[setting]}
 										onChange={e => {
-											setRosterSettings({
+											const newSettings = {
 												...rosterSettings,
 												[setting]: e
-											});
-											API.settings(id, rosterSettings);
+											}
+											setRosterSettings(newSettings);
+											API.settings(id, newSettings);
 										}}
 										size="sm"
 										maxValue={5}

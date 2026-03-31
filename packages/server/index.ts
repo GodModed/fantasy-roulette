@@ -177,6 +177,7 @@ const api = new Hono()
 
 import type { Context } from 'hono';
 import { serveStatic, upgradeWebSocket } from 'hono/bun';
+import { cors } from 'hono/cors';
 // import { upgradeWebSocket } from 'hono';
 
 export function proxyWs(proxyUrl: Parameters<typeof proxy>[0], proxyInit: Parameters<typeof proxy>[1], c: Context) {
@@ -211,7 +212,7 @@ export function proxyWs(proxyUrl: Parameters<typeof proxy>[0], proxyInit: Parame
 
 const app = new Hono()
 	.use(logger())
-	// .use('*', cors())
+	.use('*', cors())
 	.route('/api', api)
 	.get('*', serveStatic({
 		root: "../game/dist"

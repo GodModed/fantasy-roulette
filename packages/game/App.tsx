@@ -5,7 +5,7 @@ import Home from "./screens/Home";
 import Host from "./screens/Host";
 import Join from "./screens/Join";
 import { Pressable, StatusBar, Text } from "react-native";
-import { Button } from "./components/ui/button";
+import { House } from "lucide-react-native";
 import { OverlayProvider } from "@gluestack-ui/overlay";
 import Results from "./screens/Results";
 import { createStaticNavigation, StaticParamList, useRoute } from "@react-navigation/native";
@@ -27,7 +27,7 @@ const RootStack = createNativeStackNavigator({
 		},
 		contentStyle: {
 			backgroundColor: "#18181b"
-		},
+		}
 	},
 	initialRouteName: "HOME",
 	screens: {
@@ -88,13 +88,9 @@ function HomeButton() {
 
 	const navigate = useNavigate();
 
-	const route = useRoute();	
-	if (route.name == "HOME") return;
-
 
 	return (
-		<Pressable
-			className="m-2 bg-purple-700 w-3/4 md:w-1/4 active:bg-purple-950 hover:bg-purple-800 shadow-md self-center px-4 py-2 rounded-2xl"
+		<Pressable className="w-10 h-10 items-center justify-center"
 			onPress={() => {
 				setClientOptions({
 					code: "XXXXXX",
@@ -106,9 +102,10 @@ function HomeButton() {
 					started: false
 				})
 				navigate("HOME");
+				
 			}}
 		>
-			<Text className="text-purple-300 text-center text-2xl font-black m-auto">HOME</Text>
+			<House color="white" className="m-auto" size={32} />
 		</Pressable>
 	);
 }

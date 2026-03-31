@@ -22,7 +22,7 @@ export default function Join() {
 			gameSettings: state.game.settings
 		}))
 	)
-
+	
 	const [code, setCode] = useState<string>("");
 	const [name, setName] = useState<string>(clientName);
 	const [waiting, setWaiting] = useState<boolean>(false);
