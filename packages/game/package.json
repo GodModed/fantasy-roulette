@@ -22,6 +22,7 @@
     "common": "workspace:*",
     "expo": "~54.0.31",
     "expo-status-bar": "~3.0.9",
+    "lucide-react-native": "^1.7.0",
     "nativewind": "^4.1.23",
     "react": "19.1.0",
     "react-aria": "^3.33.0",
