@@ -44,7 +44,7 @@ export default function Results() {
 		await API.start(clientCode);
 	}
 
-	
+
 	return <View className="flex-1 w-screen">
 		{clientHost && <Button className="m-2 bg-purple-700 w-1/2 md:w-1/4 active:bg-purple-950 hover:bg-purple-800 self-center justify-center rounded-2xl disabled:bg-black px-4 py-2" onPress={onAgain}>
 			<Text className="text-white text-center text-2xl font-black m-auto">Again?</Text>
@@ -58,12 +58,12 @@ export default function Results() {
 			}}
 		>
 			{sortedPlayers.map((p, i) => {
-				return <Box key={i} className="p-5 border m-2">
+				return <Box key={i} className="p-5 border border-purple-700 m-2">
 					<Text className="text-center text-2xl text-white">#{i + 1} {p.name}</Text>
 					{p.roster && <>
 						<RosterDisplay roster={p.roster} />
 						<Text className="text-center text-white text-2xl m-2">FPTS: {p.fpts.toFixed(1)}</Text>
-					</>}							
+					</>}
 				</Box>
 			})}
 		</ScrollView>

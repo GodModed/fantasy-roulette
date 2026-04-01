@@ -11,6 +11,7 @@ import useGameState from "@/hooks/GameStore";
 import { useShallow } from "zustand/shallow";
 import { Slider, SliderFilledTrack, SliderThumb, SliderTrack } from "@/components/ui/slider";
 import Alert from "@blazejkustra/react-native-alert";
+import { useDebounce } from "@/hooks/Debouncer";
 
 export default function Host() {
 
@@ -42,6 +43,10 @@ export default function Host() {
 			API.settings(id, rosterSettings);
 		});
 	}, []);
+
+	useDebounce(() => {
+		API.settings(id, rosterSettings);
+	}, [id, rosterSettings], 500);
 
 	async function onStart() {
 		try {
@@ -118,7 +123,6 @@ export default function Host() {
 												[setting]: e
 											}
 											setRosterSettings(newSettings);
-											API.settings(id, newSettings);
 										}}
 										size="sm"
 										maxValue={5}
