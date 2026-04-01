@@ -2,9 +2,6 @@ import { Text } from 'react-native';
 import { getFantasyPoints, objectKeys, rosterIsComplete, shuffle } from 'common';
 import { NFL_TEAMS, NFLTeam, Roster, ROSTER_SETTINGS } from 'common/types';
 import { useEffect, useMemo, useState } from 'react';
-
-import '@/global.css';
-
 import RosterDisplay from '@/components/game/RosterDisplay';
 import { API } from '@/hooks/API';
 import { useNavigate } from '@/hooks/Navigate';

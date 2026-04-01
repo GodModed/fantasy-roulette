@@ -1,7 +1,8 @@
 import type { StaticScreenProps } from '@react-navigation/native';
+import { type } from "arktype";
 
 export const NFL_TEAMS =
-        ["Arizona Cardinals",
+    ["Arizona Cardinals",
         "Atlanta Falcons",
         "Baltimore Ravens",
         "Buffalo Bills",
@@ -57,9 +58,13 @@ export const NFL_POSITIONS = [
 //     // "D/ST"
 // ] as const;
 
-export type NFLTeam = typeof NFL_TEAMS[number];
-export type NFLPosition = typeof NFL_POSITIONS[number];
-// export type NFLRosterPosition = typeof ROSTER_POSITIONS[number];
+export const NFLTeam = type.enumerated(...NFL_TEAMS);
+export type NFLTeam = type.infer<typeof NFLTeam>;
+
+export const NFLPosition = type.enumerated(...NFL_POSITIONS);
+export type NFLPosition = type.infer<typeof NFLPosition>;
+
+// TODO: somehow turn this into an arktype
 export type NFLRosterPosition = `${NFLPosition | "FLEX"} ${number}`
 
 export type NFLPlayer = {
@@ -83,7 +88,7 @@ export type AllNFLRosters = {
 
 export type Roster = Record<NFLRosterPosition, NFLPlayer | null>;
 
-export const SCREEN = [ "HOME", "JOIN", "HOST", "GAME", "RESULTS" ] as const;
+export const SCREEN = ["HOME", "JOIN", "HOST", "GAME", "RESULTS"] as const;
 export type SCREEN = typeof SCREEN[number];
 
 export type ROSTER_SETTINGS = {

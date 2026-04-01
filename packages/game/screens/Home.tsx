@@ -1,5 +1,5 @@
 import { Pressable, Text, View } from "react-native";
-import { Button, ButtonGroup } from "../components/ui/button";
+import { ButtonGroup } from "../components/ui/button";
 import { SCREEN } from "common/types";
 import { useNavigate } from "@/hooks/Navigate";
 import useGameState from "@/hooks/GameStore";

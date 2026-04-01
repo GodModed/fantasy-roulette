@@ -8,7 +8,7 @@ import { Pressable, StatusBar, Text } from "react-native";
 import { House } from "lucide-react-native";
 import { OverlayProvider } from "@gluestack-ui/overlay";
 import Results from "./screens/Results";
-import { createStaticNavigation, StaticParamList, useRoute } from "@react-navigation/native";
+import { createStaticNavigation, StaticParamList } from "@react-navigation/native";
 import { createNativeStackNavigator, NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { useNavigate } from "./hooks/Navigate";
 import useGameState from "./hooks/GameStore";
