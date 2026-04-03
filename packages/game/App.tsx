@@ -14,6 +14,9 @@ import { useNavigate } from "./hooks/Navigate";
 import useGameState from "./hooks/GameStore";
 import useServerConnection from "./hooks/ServerConnection";
 
+// @ts-ignore
+import "@/global.css";
+
 const RootStack = createNativeStackNavigator({
 	screenOptions: {
 		headerShown: true,

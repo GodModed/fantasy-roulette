@@ -4,6 +4,7 @@ import { Actionsheet, ActionsheetBackdrop, ActionsheetContent, ActionsheetDragIn
 import { Select, SelectTrigger, SelectInput } from "../ui/select";
 import { ROSTERS } from "common/rosters";
 import Alert from '@blazejkustra/react-native-alert';
+import { Image, View } from "react-native";
 
 export default function PlayerSelector({
     pos, team,
@@ -19,16 +20,22 @@ export default function PlayerSelector({
 
     return (
         <>
-            <Select onOpen={() => setOpen(true)} className="m-1 w-3/4 md:w-1/4 self-center" >
+            <Select onOpen={() => setOpen(true)} className="m-1 w-full md:w-1/4 self-center" >
                 <SelectTrigger className={selectedPlayer != null ? "cursor-pointer h-[60px]" : "border-dashed h-[60px]"} variant="outline">
-                    <SelectInput className={selectedPlayer != null ? "placeholder:text-white text-center text-xl" : "text-center text-xl"} placeholder={selectedPlayer == null ? `Select a ${pos.split(" ")[0]}` : selectedPlayer?.name + " - " + selectedPlayer?.fpts.toFixed(1)} />
-                    {/*<SelectInput />*/}
+                    <View className="flex-1 justify-center items-center">
+                        {selectedPlayer && <Image
+                            className="absolute self-center opacity-20"
+                            source={require("@/assets/J.Gibbs.jpg")}
+                        />}
+                        <SelectInput className={selectedPlayer != null ? "placeholder:text-white text-center text-xl" : "text-center text-xl"} placeholder={selectedPlayer == null ? `Select a ${pos.split(" ")[0]}` : selectedPlayer?.name + " - " + selectedPlayer?.fpts.toFixed(1)} />
+                    </View>
+
                 </SelectTrigger>
             </Select>
 
 
 
-            {setSelectedPlayer && team && 
+            {setSelectedPlayer && team &&
                 <Actionsheet
                     className='border border-solid border-zinc-900'
                     isOpen={open && selectedPlayer == null}
@@ -51,9 +58,11 @@ export default function PlayerSelector({
                                         `Are you sure you want to select ${player.name}`,
                                         [
                                             { text: 'Cancel', style: 'cancel' },
-                                            { text: 'OK', style: 'default', onPress: () => {
-                                                setSelectedPlayer(player)
-                                            } }
+                                            {
+                                                text: 'OK', style: 'default', onPress: () => {
+                                                    setSelectedPlayer(player)
+                                                }
+                                            }
                                         ]
                                     )
                                 }}>

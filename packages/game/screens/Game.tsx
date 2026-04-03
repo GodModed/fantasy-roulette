@@ -72,7 +72,7 @@ export default function Game() {
         <>
             <View className='w-screen flex-1'>
 
-                <View className="bg-purple-700 w-3/4 md:w-1/4 h-20 rounded-2xl self-center justify-center">
+                <View className="bg-purple-700 w-full md:w-1/4 h-20 rounded-2xl self-center justify-center">
                     <Text className="text-white font-black text-2xl uppercase text-center">
                         {isFinished ? "Done!" : team}
                     </Text>
