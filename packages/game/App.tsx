@@ -9,7 +9,8 @@ import { House } from "lucide-react-native";
 import { OverlayProvider } from "@gluestack-ui/overlay";
 import Results from "./screens/Results";
 import { createStaticNavigation, StaticParamList } from "@react-navigation/native";
-import { createNativeStackNavigator, NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { createStackNavigator, StackNavigationProp } from "@react-navigation/stack";
+// import { createNativeStackNavigator, NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { useNavigate } from "./hooks/Navigate";
 import useGameState from "./hooks/GameStore";
 import useServerConnection from "./hooks/ServerConnection";
@@ -17,7 +18,9 @@ import useServerConnection from "./hooks/ServerConnection";
 // @ts-ignore
 import "@/global.css";
 
-const RootStack = createNativeStackNavigator({
+const Stack = createStackNavigator();
+
+const RootStack = createStackNavigator({
 	screenOptions: {
 		headerShown: true,
 		headerBackVisible: false,
@@ -28,15 +31,19 @@ const RootStack = createNativeStackNavigator({
 		headerStyle: {
 			backgroundColor: "#18181b"
 		},
-		contentStyle: {
+		cardStyle: {
 			backgroundColor: "#18181b"
-		}
+		},
+		animation: "slide_from_right"
 	},
 	initialRouteName: "HOME",
 	screens: {
 		HOME: {
 			screen: Home,
-			name: "HOME"
+			name: "HOME",
+			options: {
+				animation: "reveal_from_bottom"
+			}
 		},
 		GAME: {
 			screen: Game,
@@ -58,7 +65,7 @@ const RootStack = createNativeStackNavigator({
 });
 
 type RootStackParamList = StaticParamList<typeof RootStack>;
-export type StackNavigationList = NativeStackNavigationProp<RootStackParamList>;
+export type StackNavigationList = StackNavigationProp<RootStackParamList>;
 
 declare global {
 	namespace ReactNavigation {

@@ -1,10 +1,7 @@
 import { NFLPlayer, NFLPosition, NFLRosterPosition, NFLTeam } from "common/types";
 import { useState } from "react";
-import { Actionsheet, ActionsheetBackdrop, ActionsheetContent, ActionsheetDragIndicatorWrapper, ActionsheetDragIndicator, ActionsheetItem, ActionsheetItemText, ActionsheetScrollView } from "../ui/actionsheet";
-import { Select, SelectTrigger, SelectInput } from "../ui/select";
 import { ROSTERS } from "common/rosters";
-import Alert from '@blazejkustra/react-native-alert';
-import { Image, View } from "react-native";
+import { Image, Pressable, View, Text, Modal, ScrollView } from "react-native";
 
 export default function PlayerSelector({
     pos, team,
@@ -20,59 +17,45 @@ export default function PlayerSelector({
 
     return (
         <>
-            <Select onOpen={() => setOpen(true)} className="m-1 w-full md:w-1/4 self-center" >
-                <SelectTrigger className={selectedPlayer != null ? "cursor-pointer h-[60px]" : "border-dashed h-[60px]"} variant="outline">
-                    <View className="flex-1 justify-center items-center">
-                        {selectedPlayer && <Image
-                            className="absolute self-center opacity-20"
-                            source={require("@/assets/J.Gibbs.jpg")}
-                        />}
-                        <SelectInput className={selectedPlayer != null ? "placeholder:text-white text-center text-xl" : "text-center text-xl"} placeholder={selectedPlayer == null ? `Select a ${pos.split(" ")[0]}` : selectedPlayer?.name + " - " + selectedPlayer?.fpts.toFixed(1)} />
-                    </View>
+            <Pressable onPress={() => setOpen(true)} disabled={selectedPlayer != null}>
+                <View className={`h-[60px] border overflow-hidden justify-center rounded ${selectedPlayer ? "cursor-pointer border-white" : "border-dashed border-gray-500"} m-1 w-full md:w-1/4 self-center`}>
+                    {selectedPlayer && <Image
+                        className="self-center absolute scale-50 opacity-60"
+                        source={require("@/assets/J.Gibbs.jpg")}
+                    />}
+                    <Text className={`text-xl text-center ${selectedPlayer ? "text-white" : "text-gray-400"}`}>{selectedPlayer ? `${selectedPlayer.name}\n${selectedPlayer.fpts} FPTS` : `Select a ${pos.split(" ")[0]}`}</Text>
+                </View>
+            </Pressable>
 
-                </SelectTrigger>
-            </Select>
-
-
-
-            {setSelectedPlayer && team &&
-                <Actionsheet
-                    className='border border-solid border-zinc-900'
-                    isOpen={open && selectedPlayer == null}
-                    onClose={() => setOpen(false)}
-                >
-                    <ActionsheetBackdrop />
-                    <ActionsheetContent style={{ maxHeight: 300 }}>
-                        <ActionsheetDragIndicatorWrapper>
-                            <ActionsheetDragIndicator />
-                        </ActionsheetDragIndicatorWrapper>
-                        <ActionsheetItem onPress={() => setOpen(false)}>
-                            <ActionsheetItemText>Close</ActionsheetItemText>
-                        </ActionsheetItem>
-                        <ActionsheetScrollView>
-                            {getAllPlayers(team, pos.split(" ")[0] as NFLPosition | "FLEX").map(player => (
-                                <ActionsheetItem key={player.name} onPress={() => {
+            {setSelectedPlayer && team && <Modal
+                animationType="slide"
+                transparent={true}
+                visible={open}
+                onRequestClose={() => setOpen(false)}
+            >
+                <View className="bg-black w-full self-center mt-auto rounded-t-3xl h-1/2 p-4">
+                    <Pressable
+                        className="m-4 bg-purple-700 w-full md:w-1/4 active:bg-purple-950 hover:bg-purple-800 shadow-md self-center px-4 py-2 rounded-2xl"
+                        onPress={() => setOpen(false)}
+                    >
+                        <Text className="text-purple-300 text-center text-2xl font-black m-auto">Close</Text>
+                    </Pressable>
+                    <ScrollView>
+                        {getAllPlayers(team, pos.split(" ")[0] as NFLPosition | "FLEX").map(player => (
+                            <Pressable
+                                key={player.name}
+                                className="m-1 bg-purple-700 w-full md:w-1/4 active:bg-purple-950 hover:bg-purple-800 shadow-md self-center px-4 py-2 rounded-2xl"
+                                onPress={() => {
                                     setOpen(false);
-                                    Alert.alert(
-                                        'Confirm',
-                                        `Are you sure you want to select ${player.name}`,
-                                        [
-                                            { text: 'Cancel', style: 'cancel' },
-                                            {
-                                                text: 'OK', style: 'default', onPress: () => {
-                                                    setSelectedPlayer(player)
-                                                }
-                                            }
-                                        ]
-                                    )
-                                }}>
-                                    <ActionsheetItemText>{player.name}</ActionsheetItemText>
-                                </ActionsheetItem>
-                            ))}
-                        </ActionsheetScrollView>
-                    </ActionsheetContent>
-                </Actionsheet>
-            }
+                                    setSelectedPlayer(player);
+                                }}
+                            >
+                                <Text className="text-purple-300 text-center text-2xl font-black m-auto">{player.name}</Text>
+                            </Pressable>
+                        ))}
+                    </ScrollView>
+                </View>
+            </Modal>}
         </>
     )
 }
