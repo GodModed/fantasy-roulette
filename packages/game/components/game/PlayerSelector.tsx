@@ -1,7 +1,8 @@
+import { PLAYERS, TEAMS } from "common/rosters";
 import { NFLPlayer, NFLPosition, NFLRosterPosition, NFLTeam } from "common/types";
 import { useState } from "react";
-import { ROSTERS } from "common/rosters";
 import { Image, Pressable, View, Text, Modal, ScrollView } from "react-native";
+import { HEADSHOTS } from "./headshots";
 
 export default function PlayerSelector({
     pos, team,
@@ -21,9 +22,9 @@ export default function PlayerSelector({
                 <View className={`h-[60px] border overflow-hidden justify-center rounded ${selectedPlayer ? "cursor-pointer border-white" : "border-dashed border-gray-500"} m-1 w-full md:w-1/4 self-center`}>
                     {selectedPlayer && <Image
                         className="self-center absolute scale-50 opacity-60"
-                        source={require("@/assets/J.Gibbs.jpg")}
+                        source={HEADSHOTS[selectedPlayer.id]}
                     />}
-                    <Text className={`text-xl text-center ${selectedPlayer ? "text-white" : "text-gray-400"}`}>{selectedPlayer ? `${selectedPlayer.name}\n${selectedPlayer.fpts} FPTS` : `Select a ${pos.split(" ")[0]}`}</Text>
+                    <Text className={`text-xl text-center ${selectedPlayer ? "text-white" : "text-gray-400"}`}>{selectedPlayer ? `${selectedPlayer.displayName}\n${selectedPlayer.totalFpts.toFixed(1)} FPTS` : `Select a ${pos.split(" ")[0]}`}</Text>
                 </View>
             </Pressable>
 
@@ -41,18 +42,19 @@ export default function PlayerSelector({
                         <Text className="text-purple-300 text-center text-2xl font-black m-auto">Close</Text>
                     </Pressable>
                     <ScrollView>
-                        {getAllPlayers(team, pos.split(" ")[0] as NFLPosition | "FLEX").map(player => (
-                            <Pressable
-                                key={player.name}
+                        {getAllPlayers(team, pos.split(" ")[0] as NFLPosition | "FLEX").map(playerId => {
+                            const player = PLAYERS[playerId];
+                            return <Pressable
+                                key={playerId}
                                 className="m-1 bg-purple-700 w-full md:w-1/4 active:bg-purple-950 hover:bg-purple-800 shadow-md self-center px-4 py-2 rounded-2xl"
                                 onPress={() => {
                                     setOpen(false);
                                     setSelectedPlayer(player);
                                 }}
                             >
-                                <Text className="text-purple-300 text-center text-2xl font-black m-auto">{player.name}</Text>
+                                <Text className="text-purple-300 text-center text-2xl font-black m-auto">{player.displayName}</Text>
                             </Pressable>
-                        ))}
+                        })}
                     </ScrollView>
                 </View>
             </Modal>}
@@ -60,17 +62,17 @@ export default function PlayerSelector({
     )
 }
 
-function getAllPlayers(team: NFLTeam, pos: NFLRosterPosition | NFLPosition | "FLEX"): NFLPlayer[] {
+function getAllPlayers(team: NFLTeam, pos: NFLRosterPosition | NFLPosition | "FLEX"): string[] {
 
     const nflPos = pos.split(" ")[0] as NFLPosition | "FLEX";
     if (nflPos == "FLEX") {
         return [...getAllPlayers(team, "RB"), ...getAllPlayers(team, "WR"), ...getAllPlayers(team, "TE")];
     }
 
-    const players = [];
-    const rosterTeam = ROSTERS[team];
+    const players: string[] = [];
+    const rosterTeam = TEAMS[team];
 
-    if (!rosterTeam[nflPos]) return [];
-    players.push(...(rosterTeam[nflPos] ?? []));
+    if (!rosterTeam.positions[nflPos]) return [];
+    players.push(...(rosterTeam.positions[nflPos] ?? []));
     return players;
 }

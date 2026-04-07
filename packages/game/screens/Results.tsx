@@ -36,7 +36,7 @@ export default function Results() {
 
 	const [round, _] = useState<number>(gameRound);
 	useEffect(() => {
-		if (gameRound == round) return;
+		if (gameRound <= round) return;
 		navigate("GAME");
 	}, [gameRound]);
 

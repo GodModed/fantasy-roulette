@@ -59,6 +59,7 @@ const api = new Hono()
 		});
 	}).get('/join/:id/:name', (c) => {
 		const code = c.req.param('id');
+		if (!code) return c.text("No id", 404);
 		if (games[code] == null) {
 			c.status(404);
 			return c.text("Not found");
@@ -67,6 +68,7 @@ const api = new Hono()
 		const game = games[code];
 
 		const name = c.req.param('name');
+		if (!name) return c.text("No name", 404);
 		game.players.push({ name, fpts: 0 });
 
 		hostRoomEmitter.emit("state-" + code);
@@ -75,6 +77,7 @@ const api = new Hono()
 		return c.text("Game found");
 	}).get('/start/:id', (c) => {
 		const code = c.req.param('id');
+		if (!code) return c.text("No id", 404);
 		const game = games[code];
 		if (game == null) {
 			c.status(404);
@@ -99,6 +102,7 @@ const api = new Hono()
 	}), async (c) => {
 
 		const id = c.req.param('id');
+		if (!id) return c.text("No id", 404);
 		const game = games[id];
 		if (!game) return c.text("Not found", 404);
 
@@ -116,7 +120,7 @@ const api = new Hono()
 	}), async (c) => {
 
 		const { id, name } = c.req.param();
-
+		if (!id || !name) return c.text("Invalid params", 404);
 		const game = games[id];
 		if (!game) return c.text("Not found", 404);
 
@@ -132,6 +136,7 @@ const api = new Hono()
 		return c.text("Done!");
 	}).get('/hostStream/:id', (c) => {
 		const code = c.req.param('id');
+		if (!code) return c.text("No id", 404);
 		if (games[code] == null) {
 			c.status(404);
 			return c.text("Not found");

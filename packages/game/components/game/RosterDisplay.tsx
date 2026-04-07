@@ -2,7 +2,6 @@ import { NFLPlayer, NFLPosition, NFLRosterPosition, NFLTeam, Roster } from "comm
 import { useState } from "react";
 import { Actionsheet, ActionsheetBackdrop, ActionsheetContent, ActionsheetDragIndicatorWrapper, ActionsheetDragIndicator, ActionsheetItem, ActionsheetItemText, ActionsheetScrollView } from "../ui/actionsheet";
 import { Select, SelectTrigger, SelectInput } from "../ui/select";
-import { ROSTERS } from "common/rosters";
 import PlayerSelector from "./PlayerSelector";
 import { ScrollView } from "react-native";
 import { objectKeys } from "common";

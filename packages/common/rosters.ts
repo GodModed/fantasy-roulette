@@ -1,4 +1,11 @@
-import { PLAYERS } from "./players";
-import type { NFLTeamRoster } from "./types";
+import players from "./players.json";
+import teams from "./teams.json";
+import type { NFLPlayer, NFLPosition } from "./types";
 
-export const ROSTERS: Record<string, Partial<NFLTeamRoster>> = PLAYERS as unknown as Record<string, Partial<NFLTeamRoster>>;
+export const PLAYERS = players as Record<string, NFLPlayer>;
+export const TEAMS = teams as Record<string, {
+    name: string,
+    positions: {
+        [P in NFLPosition]?: string[]
+    }
+}>;

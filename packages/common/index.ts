@@ -31,7 +31,7 @@ export function rosterIsComplete(roster: Roster): boolean {
 export function getFantasyPoints(roster: Roster): number {
     let fpts = 0;
     for (const key of objectKeys(roster)) {
-        fpts += roster[key]?.fpts || 0;
+        fpts += roster[key]?.totalFpts || 0;
     }
     return fpts;
 }
