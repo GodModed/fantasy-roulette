@@ -19,7 +19,7 @@ export const NFL_TEAMS = [
     "KC",
     "LV",
     "LAC",
-    "LAR",
+    "LA",
     "MIA",
     "MIN",
     "NE",

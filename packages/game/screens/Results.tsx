@@ -51,7 +51,7 @@ export default function Results() {
 		</Button>}
 		<Text className="text-center text-white font-black text-xl rounded">{numFinished}/{gamePlayers.length} Finished</Text>
 		<ScrollView
-			className="flex-1"
+			className="flex-1 max-w-[75vh]"
 			contentContainerStyle={{
 				paddingVertical: 24,
 				paddingHorizontal: 16

@@ -8,6 +8,7 @@ import { useNavigate } from '@/hooks/Navigate';
 import useGameState from '@/hooks/GameStore';
 import { useShallow } from 'zustand/shallow';
 import { View } from 'react-native';
+import { TEAM_NAME } from 'common/rosters';
 
 function genRoster(settings: ROSTER_SETTINGS): Roster {
     const roster: Record<string, null | undefined> = {};
@@ -74,9 +75,11 @@ export default function Game() {
 
                 <View className="bg-purple-700 w-full md:w-1/4 h-20 rounded-2xl self-center justify-center">
                     <Text className="text-white font-black text-2xl uppercase text-center">
-                        {isFinished ? "Done!" : team}
+                        {isFinished ? "Done!" : TEAM_NAME[team]}
                     </Text>
                 </View>
+
+                <Text className="text-center text-white text-2xl m-2">Total FPTS: {fpts.toFixed(1)}</Text>
 
                 <RosterDisplay
                     roster={roster}
@@ -86,9 +89,6 @@ export default function Game() {
                         setTeamIdx(i => i + 1);
                     }}
                 />
-
-                <Text className="text-center text-white text-2xl m-2">Total FPTS: {fpts.toFixed(1)}</Text>
-
             </View>
         </>
     );

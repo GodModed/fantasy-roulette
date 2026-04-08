@@ -19,10 +19,12 @@ export default function PlayerSelector({
     return (
         <>
             <Pressable onPress={() => setOpen(true)} disabled={selectedPlayer != null}>
-                <View className={`h-[60px] border overflow-hidden justify-center rounded ${selectedPlayer ? "cursor-pointer border-white" : "border-dashed border-gray-500"} m-1 w-full md:w-1/4 self-center`}>
+                <View className={`h-[60px] border justify-center rounded ${selectedPlayer ? "cursor-pointer border-white" : "border-dashed border-gray-500"} m-1 w-full md:w-1/4 self-center`}>
                     {selectedPlayer && <Image
-                        className="self-center absolute scale-50 opacity-60"
+                        className="absolute left-1 top-[5px] w-[50px] h-[50px] opacity-80"
+                        style={{ width: 50, height: 50 }}
                         source={HEADSHOTS[selectedPlayer.id]}
+                        resizeMode="contain"
                     />}
                     <Text className={`text-xl text-center ${selectedPlayer ? "text-white" : "text-gray-400"}`}>{selectedPlayer ? `${selectedPlayer.displayName}\n${selectedPlayer.totalFpts.toFixed(1)} FPTS` : `Select a ${pos.split(" ")[0]}`}</Text>
                 </View>
@@ -71,6 +73,8 @@ function getAllPlayers(team: NFLTeam, pos: NFLRosterPosition | NFLPosition | "FL
 
     const players: string[] = [];
     const rosterTeam = TEAMS[team];
+
+    if (!rosterTeam) console.log(team);
 
     if (!rosterTeam.positions[nflPos]) return [];
     players.push(...(rosterTeam.positions[nflPos] ?? []));

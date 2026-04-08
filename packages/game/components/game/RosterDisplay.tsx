@@ -19,7 +19,7 @@ export default function RosterDisplay({
 }) {
 
     return <ScrollView
-        className="flex-1"
+        className="flex-1 max-h-[75vh]"
         contentContainerStyle={{
             paddingVertical: 24,
             paddingHorizontal: 16
