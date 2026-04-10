@@ -7,7 +7,7 @@ import { API } from '@/hooks/API';
 import { useNavigate } from '@/hooks/Navigate';
 import useGameState from '@/hooks/GameStore';
 import { useShallow } from 'zustand/shallow';
-import { View } from 'react-native';
+import { View, ScrollView } from 'react-native';
 import { TEAM_NAME } from 'common/rosters';
 
 function genRoster(settings: ROSTER_SETTINGS): Roster {
@@ -70,9 +70,8 @@ export default function Game() {
     }, [roster]);
 
     return (
-        <>
-            <View className='w-screen flex-1'>
-
+        <View className='flex-1'>
+            <ScrollView className='flex-1 max-h-[90svh]' contentContainerStyle={{ paddingBottom: 40, paddingTop: 16 }}>
                 <View className="bg-purple-700 w-full md:w-1/4 h-20 rounded-2xl self-center justify-center">
                     <Text className="text-white font-black text-2xl uppercase text-center">
                         {isFinished ? "Done!" : TEAM_NAME[team]}
@@ -89,7 +88,8 @@ export default function Game() {
                         setTeamIdx(i => i + 1);
                     }}
                 />
-            </View>
-        </>
+            </ScrollView>
+
+        </View>
     );
 }

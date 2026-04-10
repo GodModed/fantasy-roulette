@@ -18,13 +18,7 @@ export default function RosterDisplay({
     nextTeam?: () => void
 }) {
 
-    return <ScrollView
-        className="flex-1 max-h-[75vh]"
-        contentContainerStyle={{
-            paddingVertical: 24,
-            paddingHorizontal: 16
-        }}
-    >
+    return <>
         {objectKeys(roster).map(pos => {
             if (!team || !nextTeam || !setRoster) {
                 return <PlayerSelector
@@ -49,5 +43,5 @@ export default function RosterDisplay({
                 />
             }
         })}
-    </ScrollView>
+    </>
 }
