@@ -73,16 +73,18 @@ export default function Game() {
         <View className='flex-1'>
             <ScrollView className='flex-1 max-h-[90svh]' contentContainerStyle={{ paddingBottom: 40, paddingTop: 16 }}>
                 <View className="bg-purple-700 w-full lg:w-1/4 h-20 rounded-2xl self-center justify-center p-[50px]">
-                    <Text className="text-white font-black text-xl uppercase text-center">
-                        {isFinished ? "Done!" : TEAM_NAME[team]}
+                    <Text className="text-white font-black text-2xl uppercase text-center">
+                        {isFinished ? "Done!" : <>
+                            {TEAM_NAME[team]}
+                            <Image
+                                className='opacity-80 w-[1em] h-[1em] ml-2 scale-150'
+                                source={{
+                                    uri: `https://a.espncdn.com/i/teamlogos/nfl/500/${team.toLowerCase()}.png`
+                                }}
+                            />
+                        </>}
+
                     </Text>
-                    <Image
-                        className='absolute left-1 opacity-80'
-                        style={{ width: 50, height: 50 }}
-                        source={{
-                            uri: `https://a.espncdn.com/i/teamlogos/nfl/500/${team.toLowerCase()}.png`
-                        }}
-                    />
                 </View>
 
                 <Text className="text-center text-white text-2xl m-2">Total FPTS: {fpts.toFixed(1)}</Text>

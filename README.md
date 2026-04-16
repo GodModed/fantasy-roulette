@@ -37,7 +37,6 @@ bun run index.ts
 Now, the server is running on port 3000.
 
 ## Roadmap
-* Fix bug with ScrollView
 * Add settings page
 * Add draft timers
 * Implement partial game synching to decrease bandwidth
