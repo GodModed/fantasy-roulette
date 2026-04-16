@@ -57,6 +57,7 @@ export type NFLPlayer = {
     team: NFLTeam;
     fpts: number[];
     totalFpts: number;
+    image: string
 };
 
 export type NFLTeamRoster = {

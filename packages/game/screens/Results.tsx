@@ -46,12 +46,12 @@ export default function Results() {
 
 
 	return <View className="flex-1 w-screen">
-		{clientHost && <Button className="m-2 bg-purple-700 w-1/2 md:w-1/4 active:bg-purple-950 hover:bg-purple-800 self-center justify-center rounded-2xl disabled:bg-black px-4 py-2" onPress={onAgain}>
+		{clientHost && <Button className="m-2 bg-purple-700 w-1/2 lg:w-1/4 active:bg-purple-950 hover:bg-purple-800 self-center justify-center rounded-2xl disabled:bg-black px-4 py-2" onPress={onAgain}>
 			<Text className="text-white text-center text-2xl font-black m-auto">Again?</Text>
 		</Button>}
 		<Text className="text-center text-white font-black text-xl rounded">{numFinished}/{gamePlayers.length} Finished</Text>
 		<ScrollView
-			className="flex-1 max-w-[75vh]"
+			className="flex-1 max-h-[90svh]"
 			contentContainerStyle={{
 				paddingVertical: 24,
 				paddingHorizontal: 16

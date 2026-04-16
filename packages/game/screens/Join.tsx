@@ -62,7 +62,7 @@ export default function Join() {
 					<Text className="text-white text-4xl text-center font-black uppercase">Join</Text>
 					<Text className="text-purple-600 text-4xl text-center font-black uppercase">Roulette</Text>	
 				</View>
-				<View className="w-3/4 md:w-1/4 bg-zinc-950 rounded-2xl p-3 m-4 self-center">
+				<View className="w-3/4 lg:w-1/4 bg-zinc-950 rounded-2xl p-3 m-4 self-center">
 					<Input className="mx-1 my-4">
 						<InputField className="text-white" value={code} onChangeText={setCode} placeholder="Code"></InputField>
 					</Input>
@@ -71,7 +71,7 @@ export default function Join() {
 					</Input>
 				</View>
 				<Button
-					className="m-2 bg-purple-700 w-1/2 md:w-1/4 active:bg-purple-950 hover:bg-purple-800 self-center rounded-2xl disabled:bg-black px-4 py-2"
+					className="m-2 bg-purple-700 w-1/2 lg:w-1/4 active:bg-purple-950 hover:bg-purple-800 self-center rounded-2xl disabled:bg-black px-4 py-2"
 					onPress={onClick}
 					disabled={waiting || name.trim() == "" || code.trim() == ""}
 				>
@@ -79,7 +79,7 @@ export default function Join() {
 				</Button>
 
 				{waiting && <>
-					<View className="w-3/4 md:w-1/4 bg-zinc-950 rounded-2xl p-3 m-4 self-center">
+					<View className="w-3/4 lg:w-1/4 bg-zinc-950 rounded-2xl p-3 m-4 self-center">
 						{objectKeys(gameSettings).map(setting => (
 							<View className="flex-row items-center gap-4 m-2">
 								<View className="w-16">

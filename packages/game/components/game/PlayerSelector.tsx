@@ -2,7 +2,6 @@ import { PLAYERS, TEAMS } from "common/rosters";
 import { NFLPlayer, NFLPosition, NFLRosterPosition, NFLTeam } from "common/types";
 import { useState } from "react";
 import { Image, Pressable, View, Text, Modal, ScrollView } from "react-native";
-import { HEADSHOTS } from "./headshots";
 
 export default function PlayerSelector({
     pos, team,
@@ -19,11 +18,13 @@ export default function PlayerSelector({
     return (
         <>
             <Pressable onPress={() => setOpen(true)} disabled={selectedPlayer != null}>
-                <View className={`h-[60px] border justify-center rounded ${selectedPlayer ? "cursor-pointer border-white" : "border-dashed border-gray-500"} m-1 w-full md:w-1/4 self-center`}>
+                <View className={`h-[60px] border justify-center rounded ${selectedPlayer ? "cursor-pointer border-white" : "border-dashed border-gray-500"} m-1 w-full lg:w-1/4 self-center`}>
                     {selectedPlayer && <Image
                         className="absolute left-1 top-[5px] w-[50px] h-[50px] opacity-80"
                         style={{ width: 50, height: 50 }}
-                        source={HEADSHOTS[selectedPlayer.id]}
+                        source={{
+                            uri: selectedPlayer.image
+                        }}
                         resizeMode="contain"
                     />}
                     <Text className={`text-xl text-center ${selectedPlayer ? "text-white" : "text-gray-400"}`}>{selectedPlayer ? `${selectedPlayer.displayName}\n${selectedPlayer.totalFpts.toFixed(1)} FPTS` : `Select a ${pos.split(" ")[0]}`}</Text>
@@ -38,7 +39,7 @@ export default function PlayerSelector({
             >
                 <View className="bg-black w-full self-center mt-auto rounded-t-3xl h-1/2 p-4">
                     <Pressable
-                        className="m-4 bg-purple-700 w-full md:w-1/4 active:bg-purple-950 hover:bg-purple-800 shadow-md self-center px-4 py-2 rounded-2xl"
+                        className="m-4 bg-purple-700 w-full lg:w-1/4 active:bg-purple-950 hover:bg-purple-800 shadow-md self-center px-4 py-2 rounded-2xl"
                         onPress={() => setOpen(false)}
                     >
                         <Text className="text-purple-300 text-center text-2xl font-black m-auto">Close</Text>
@@ -48,7 +49,7 @@ export default function PlayerSelector({
                             const player = PLAYERS[playerId];
                             return <Pressable
                                 key={playerId}
-                                className="m-1 bg-purple-700 w-full md:w-1/4 active:bg-purple-950 hover:bg-purple-800 shadow-md self-center px-4 py-2 rounded-2xl"
+                                className="m-1 bg-purple-700 w-full lg:w-1/4 active:bg-purple-950 hover:bg-purple-800 shadow-md self-center px-4 py-2 rounded-2xl"
                                 onPress={() => {
                                     setOpen(false);
                                     setSelectedPlayer(player);

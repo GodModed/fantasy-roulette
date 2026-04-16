@@ -35,7 +35,7 @@ function ScreenButton({
 
 
 	return <Pressable
-		className="bg-purple-700 w-3/4 md:w-1/4 active:bg-purple-950 hover:bg-purple-800 shadow-md self-center px-4 py-2 rounded-2xl"
+		className="bg-purple-700 w-3/4 lg:w-1/4 active:bg-purple-950 hover:bg-purple-800 shadow-md self-center px-4 py-2 rounded-2xl"
 		onPress={() => {
 			setClientOptions({
 				code: "XXXXXX",

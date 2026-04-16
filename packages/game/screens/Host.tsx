@@ -79,13 +79,13 @@ export default function Host() {
 				</View>
 
 				<Box className="flex-column items-center">
-					<View className="bg-purple-700 w-3/4 md:w-1/4 h-20 rounded-2xl justify-center">
+					<View className="bg-purple-700 w-3/4 lg:w-1/4 h-20 rounded-2xl justify-center">
 						<Text className="text-white font-black text-2xl uppercase text-center self-center">
 							Code: {id}
 						</Text>	
 					</View>
 
-					<View className="w-3/4 md:w-1/4 bg-zinc-950 rounded-2xl p-3 m-4">
+					<View className="w-3/4 lg:w-1/4 bg-zinc-950 rounded-2xl p-3 m-4">
 
 						<Input className="mx-1 mb-4">
 							<InputField className="text-white" placeholder="Name" value={hostName} onChangeText={setHostName}></InputField>
@@ -146,7 +146,7 @@ export default function Host() {
 					</View>
 
 					<Button
-						className="m-2 bg-purple-700 w-1/2 md:w-1/4 active:bg-purple-950 hover:bg-purple-800 self-center rounded-2xl disabled:bg-black px-4 py-2"
+						className="m-2 bg-purple-700 w-1/2 lg:w-1/4 active:bg-purple-950 hover:bg-purple-800 self-center rounded-2xl disabled:bg-black px-4 py-2"
 						onPress={onStart}
 						disabled={id == "XXXXXX" || hostName.trim() == ""}
 					>
